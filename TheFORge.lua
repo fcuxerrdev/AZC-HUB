@@ -109,9 +109,9 @@ Button.MouseLeave:Connect(function()
         { Size = originalSize }):Play()
 end)
 
-local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/MZ-HUb/refs/heads/main/Fluent.luau"))()
-local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/MZ-HUb/refs/heads/main/SaveManager.luau"))()
-local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/MZ-HUb/refs/heads/main/InterfaceManager.luau"))()
+local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/InterfaceManager.luau"))()
+local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/SaveManager.luau"))()
+local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/InterfaceManager.luau"))()
 
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local windowSize = isMobile and UDim2.fromOffset(1080, 860) or UDim2.fromOffset(580, 480)
