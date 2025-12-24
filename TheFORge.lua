@@ -118,7 +118,7 @@ local windowSize = isMobile and UDim2.fromOffset(1080, 860) or UDim2.fromOffset(
 
 local Window = Library:CreateWindow{
     Title = "AZC Hub | TheForge",
-    SubTitle = "BY @fcuxer",
+    SubTitle = "BY fcuxer",
     TabWidth = 160,
     Size = windowSize,
     Resize = true, 
@@ -4084,3 +4084,4 @@ task.spawn(function()
         end
     end
 end)
+
