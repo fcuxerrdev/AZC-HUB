@@ -189,7 +189,7 @@ local Window = Library:CreateWindow{
     Resize = true, 
     MinSize = Vector2.new(470, 380),
     Acrylic = true, 
-    Theme = "Dark",
+    Theme = "Rose",
     MinimizeKey = Enum.KeyCode.RightControl
 }
 
@@ -4613,6 +4613,7 @@ task.spawn(function()
     end
 end)
 -- ================== END PATCH ==================
+
 
 
 
