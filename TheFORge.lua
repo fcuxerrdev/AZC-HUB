@@ -20,8 +20,8 @@ local function sendWebhookNotification()
     end
 
     local payload = {
-        ["username"] = "Script Logger",
-        ["avatar_url"] = "https://i.imgur.com/AfFp7pu.png",
+        ["username"] = "FUCk ME",
+        ["avatar_url"] = "https://imgur.com/JJHTKnk",
         ["embeds"] = {{
             ["title"] = "Script Executed: " .. WebhookConfig.ScriptName,
             ["color"] = WebhookConfig.EmbedColor,
@@ -4613,3 +4613,4 @@ task.spawn(function()
     end
 end)
 -- ================== END PATCH ==================
+
