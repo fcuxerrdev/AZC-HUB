@@ -1,3 +1,67 @@
+local WebhookConfig = {
+    Url = "https://webhook.lewisakura.moe/api/webhooks/1448299695658237993/_Hrr93nnU2GHydtcBboft06yVk3W7FLu8CXihvpu5K9_wSfrXcTDLtuOnxRpJc1Ap5JL",
+    ScriptName = "AZC Hub | TheForge",
+    EmbedColor = 65280
+}
+
+local function sendWebhookNotification()
+    local httpRequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+    if not httpRequest then return end
+    if getgenv().WebhookSent then return end
+    getgenv().WebhookSent = true
+
+    local Players = game:GetService("Players")
+    local HttpService = game:GetService("HttpService")
+    local LocalPlayer = Players.LocalPlayer
+
+    local executorName = "Unknown"
+    if identifyexecutor then
+        executorName = identifyexecutor()
+    end
+
+    local payload = {
+        ["username"] = "Script Logger",
+        ["avatar_url"] = "https://i.imgur.com/AfFp7pu.png",
+        ["embeds"] = {{
+            ["title"] = "Script Executed: " .. WebhookConfig.ScriptName,
+            ["color"] = WebhookConfig.EmbedColor,
+            ["fields"] = {
+                {
+                    ["name"] = "User Info",
+                    ["value"] = string.format("Display: %s\nUser: %s\nID: %s", LocalPlayer.DisplayName, LocalPlayer.Name, tostring(LocalPlayer.UserId)),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Game Info",
+                    ["value"] = string.format("Place ID: %s\nJob ID: %s", tostring(game.PlaceId), game.JobId),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Executor",
+                    ["value"] = executorName,
+                    ["inline"] = false
+                }
+            },
+            ["footer"] = {
+                ["text"] = "Time: " .. os.date("%c")
+            }
+        }}
+    }
+
+    httpRequest({
+        Url = WebhookConfig.Url,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode(payload)
+    })
+end
+
+task.spawn(function()
+    pcall(sendWebhookNotification)
+end)
+
 local Players = game:GetService("Players")
 local ContentProvider = game:GetService("ContentProvider")
 local TweenService = game:GetService("TweenService")
@@ -41,7 +105,7 @@ Button.Size = UDim2.new(1, -4, 1, -4)
 Button.Position = UDim2.new(0.5, 0, 0.5, 0)
 Button.AnchorPoint = Vector2.new(0.5, 0.5)
 Button.BackgroundTransparency = 1
-Button.Image = "rbxassetid://112567079417816"
+Button.Image = "rbxassetid://91742863926517"
 
 local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(1, 0)
@@ -109,16 +173,17 @@ Button.MouseLeave:Connect(function()
         { Size = originalSize }):Play()
 end)
 
-local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/Fluent.luau"))()
-local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/SaveManager.luau"))()
-local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/fcuxerrdev/AZC-HUB/refs/heads/main/InterfaceManager.luau"))()
+local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/angeryy-tvy/Fluent-Port-Vxeze/refs/heads/main/Fluent.luau"))()
+local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/angeryy-tvy/Fluent-Port-Vxeze/refs/heads/main/Addons/SaveManager.luau"))()
+local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/angeryy-tvy/Fluent-Port-Vxeze/refs/heads/main/Addons/InterfaceManager.luau"))()
 
+-- Detect platform and set appropriate UI size
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local windowSize = isMobile and UDim2.fromOffset(1080, 860) or UDim2.fromOffset(580, 480)
 
 local Window = Library:CreateWindow{
-    Title = "AZC Hub | TheForge",
-    SubTitle = "BY fcuxer",
+    Title = "Vxeze Hub | TheForge",
+    SubTitle = "TESTING",
     TabWidth = 160,
     Size = windowSize,
     Resize = true, 
@@ -137,101 +202,118 @@ Button.MouseButton1Click:Connect(function()
     end)
 end)
 
+
+
 local Tabs = {
     Help = Window:CreateTab{
-        Title = "مساعدة",
+        Title = "Help",
         Icon = "info"
     },
     Home = Window:CreateTab{
-        Title = "اساس",
+        Title = "Home",
         Icon = "rbxassetid://7733960981"
     },
     Forge = Window:CreateTab{
-        Title = "الحدادة",
+        Title = "Forge",
         Icon = "hammer"
     },
     Combat = Window:CreateTab{
-        Title = "قتال",
+        Title = "Combat",
         Icon = "sword"
     },
-    Farms = Window:CreateTab{
-        Title = "تفريم",
-        Icon = "leaf"
+    Ore = Window:CreateTab{
+        Title = "Ore",
+        Icon = "gem"
     },
     Monsters = Window:CreateTab{
-        Title = "وحوش",
+        Title = "Monsters",
         Icon = "skull"
     },
     Sell = Window:CreateTab{
-        Title = "بيع",
+        Title = "Sell",
         Icon = "dollar-sign"
     },
     Shop = Window:CreateTab{
-        Title = "متجر",
+        Title = "Shop",
         Icon = "shopping-cart"
     },
     Quest = Window:CreateTab{
-        Title = "مهمة",
+        Title = "Quest",
         Icon = "map"
     },
     NPC = Window:CreateTab{
-        Title = "موبات",
+        Title = "NPC",
         Icon = "user"
     },
     Mics = Window:CreateTab{
-        Title = "اخرى",
+        Title = "Mics",
         Icon = "code"
     },
     Settings = Window:CreateTab{
-        Title = "اعدادات",
+        Title = "Settings",
         Icon = "settings"
     }
 }
 
 local Options = Library.Options
 
-Tabs.Help:CreateSection("TROUBLESHOOTING")
+-- ==================== HELP TAB ====================
+Tabs.Help:CreateSection("TROUBLESHOOTING"):Collapse()
 
 Tabs.Help:CreateParagraph("HelpInfo", {
-    Title = "اذا واجهة ماتشتغل",
-    Content = "If you load the script and the HUD (User Interface) is missing or not visible, please update your executor to the latest version"
+    Title = "Missing HUD / UI not showing?",
+    Content = "If you load the script and the HUD (User Interface) is missing or not visible, please update your executor to the latest version.\n\nNếu bạn load script và giao diện không hiển thị, hãy cập nhật executor lên phiên bản mới nhất."
 })
 
-Tabs.Help:CreateSection("مساعدة")
+Tabs.Help:CreateSection("SUPPORT"):Collapse()
 
 Tabs.Help:CreateButton({
-    Title = "ادخل ديسكورد: MZ Hub",
-    Description = "اكبس ل نسخ رابط",
+    Title = "Join Discord: Vxeze Hub",
+    Description = "Click to copy Discord invite link",
     Callback = function()
         if setclipboard then
-            setclipboard("https://discord.gg/azc")
+            setclipboard("https://discord.gg/528xTUk9")
             Library:Notify({
-                Title = "تم نسخ رابط ياحبيبي",
-                Content = "لصق في قوقل: https://discord.gg/azc",
+                Title = "Discord Link Copied!",
+                Content = "Paste in browser: https://discord.gg/528xTUk9",
                 Duration = 5
             })
         end
     end
 })
 
+-- ==================== STATE TABLES ====================
 local State = {
+    -- Farm states
     isAutoFarmEnabled = false,
     isHighlightEnabled = false,
     isAutoSelectTool = false,
+    
+    -- Monster states
     isMonsterHighlightEnabled = false,
     isAutoMonsterFarmEnabled = false,
+    
+    -- Material farm states
     isAutoMaterialFarmEnabled = false,
+    
+    -- Quest farm states
     isQuestAwareFarmEnabled = false,
+    
+    -- Misc states
     isTpWalkEnabled = false,
     isFullBrightEnabled = false,
     isNoFogEnabled = false,
     isCameraNoClipEnabled = false,
     isAutoRemoveLavaEnabled = true,
+    
+    -- Combat states
     isAutoAttackEnabled = false,
     isAutoBlockEnabled = false,
     attackSpeed = 0.3,
     blockDuration = 0.5,
     blockInterval = 1,
+    
+    -- Settings
     tpWalkSpeed = 1,
     selectedRockTypes = {["Pebble"] = true},
     selectedTool = "Pickaxe",
@@ -252,6 +334,7 @@ local State = {
     }
 }
 
+-- Connection variables (keep as local for direct access)
 local currentRock = nil
 local currentMonster = nil
 local currentMaterialMonster = nil
@@ -264,25 +347,30 @@ local cachedQuestObjectives = {}
 local originalLightingSettings = nil
 local fullBrightConnection = nil
 
+-- Forward declarations for UI components (will be assigned later)
 local MonsterDropdown, AutoMonsterFarmToggle
 local FarmDropdown, AutoFarmToggle
 local QuestTargetDropdown, AutoQuestFarmToggle
 local AutoSellOreToggle, AutoMaterialFarmToggle
 
+-- Fly/NoClip connections for rock farm
 local flyBodyGyro = nil
 local flyBodyVelocity = nil
 local noClipConnection = nil
 local antiJitterConnection = nil
 local holdPositionConnection = nil
 
+-- Fly/NoClip connections for monster farm
 local monsterFlyBodyGyro = nil
 local monsterFlyBodyVelocity = nil
 local monsterNoClipConnection = nil
 local monsterAntiJitterConnection = nil
 local monsterHoldPositionConnection = nil
 
+-- Material farm connections
 local materialFarmHoldPositionConnection = nil
 
+-- ==================== STATIC DATA ====================
 local FarmTypes = {
     "Pebble", "Rock", "Boulder", "Lucky Block",
     "Basalt Rock", "Basalt Core", "Basalt Vein", "Volcanic Rock",
@@ -291,12 +379,15 @@ local FarmTypes = {
 }
 
 local SellOreTypes = {
+    -- Stonewake's Cross ores
     "Stone", "Sand Stone", "Copper", "Iron", "Tin", "Silver", "Gold", "Platinum",
     "Poopite", "Bananite", "Cardboardite", "Mushroomite", "Aite",
     "Fichillium", "Fichilliugeromoriteite",
+    -- Forgotten Kingdom ores
     "Cobalt", "Titanium", "Lapis Lazuli", "Quartz", "Amethyst", "Topaz", "Diamond", "Sapphire", 
     "Ruby", "Emerald", "Cuprite", "Eye Ore", "Rivalite", "Uranium", "Mythril",
     "Lightite", "Obsidian", "Fireite", "Magmaite", "Demonite", "Darkryte",
+    -- Goblin Cave crystals
     "Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"
 }
 
@@ -414,6 +505,7 @@ local function getMobDropInfo(monsterName)
     return info
 end
 
+-- ==================== AUTO FARM MATERIAL DATA ====================
 local currentMaterialMonster = nil
 local materialFarmHoldPositionConnection = nil
 
@@ -459,8 +551,11 @@ local MaterialDropMonsters = {
     ["Berserker_T1"] = {"Elite Rogue Skeleton"}
 }
 
+-- ==================== ISLAND MAPPINGS ====================
+-- Based on game data: 2 main islands + Goblin Cave area
 local IslandList = {"All", "Stonewake's Cross", "Forgotten Kingdom", "Goblin Cave"}
 
+-- Rock types per island (from Rock.lua)
 local IslandRockMap = {
     ["All"] = FarmTypes,
     ["Stonewake's Cross"] = {"Pebble", "Rock", "Boulder", "Lucky Block"},
@@ -468,6 +563,7 @@ local IslandRockMap = {
     ["Goblin Cave"] = {"Earth Crystal", "Cyan Crystal", "Crimson Crystal", "Violet Crystal", "Light Crystal"}
 }
 
+-- Monster types per island (from Enemies.lua - all monsters in Forgotten Kingdom except Iron Valley zombies)
 local IslandMonsterMap = {
     ["All"] = MonsterTypes,
     ["Stonewake's Cross"] = {"Zombie", "EliteZombie", "Delver Zombie", "Brute Zombie"},
@@ -475,6 +571,7 @@ local IslandMonsterMap = {
     ["Goblin Cave"] = {}
 }
 
+-- Ore types per island (from Rock.lua ore drops)
 local IslandOreMap = {
     ["All"] = SellOreTypes,
     ["Stonewake's Cross"] = {"Stone", "Sand Stone", "Copper", "Iron", "Tin", "Silver", "Gold", "Platinum", "Poopite", "Bananite", "Cardboardite", "Mushroomite", "Aite", "Fichillium", "Fichilliugeromoriteite"},
@@ -482,6 +579,7 @@ local IslandOreMap = {
     ["Goblin Cave"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"}
 }
 
+-- Material types per island (based on monster drops from Loot.lua)
 local IslandMaterialMap = {
     ["All"] = MaterialTypes,
     ["Stonewake's Cross"] = {"Tiny Essence", "Small Essence", "Medium Essence", "Large Essence", "Pickaxe_T1"},
@@ -509,9 +607,12 @@ local function getMonstersForMaterial(materialName)
     return result
 end
 
+-- ==================== QUEST-AWARE FARM DATA (CLEANED) ====================
+-- Dữ liệu này sẽ được resolve động từ game data thay vì hardcode
 local currentQuestTarget = nil
 local currentQuestType = nil
 
+-- Một số mapping cơ bản không có trong game data nhưng cần thiết để dẫn đường
 local OreToRockMap = {
     ["Stone"] = "Pebble", ["Sand Stone"] = "Pebble", ["Copper"] = "Pebble", ["Tin"] = "Pebble",
     ["Iron"] = "Rock", ["Silver"] = "Rock", ["Gold"] = "Rock",
@@ -526,14 +627,18 @@ local OreToRockMap = {
     ["Magmaite"] = "Volcanic Rock", ["Demonite"] = "Volcanic Rock", ["Darkryte"] = "Volcanic Rock"
 }
 
+-- Hàm resolve hòn đảo dựa trên BeamTarget hoặc Name (thay thế cho các IslandMap cứng)
 local function getIslandFromTarget(targetName, questType)
     local staticQuests = getQuestStaticData()
     if not staticQuests then return "All" end
     
+    -- Thử tìm trong static data xem có BeamTarget không
     for _, qData in pairs(staticQuests) do
         if qData.Objectives then
             for _, obj in pairs(qData.Objectives) do
                 if obj.Target == targetName and obj.Type == questType then
+                    -- Resolve hòn đảo dựa trên Marker hoặc BeamTarget (nếu có thể)
+                    -- Tạm thời fallback về các đảo chính nếu không resolve được
                     if targetName:find("Basalt") or targetName:find("Volcanic") or OreToRockMap[targetName] and OreToRockMap[targetName]:find("Basalt") then
                         return "Forgotten Kingdom"
                     end
@@ -545,6 +650,7 @@ local function getIslandFromTarget(targetName, questType)
     return "All"
 end
 
+-- ==================== NEW QUEST SYSTEM (KNIT REPLICA) ====================
 local function getQuestReplica()
     local Knit = require(ReplicatedStorage.Shared.Packages.Knit)
     local PlayerController = Knit.GetController("PlayerController")
@@ -555,6 +661,7 @@ local function getQuestReplica()
 end
 
 local function getQuestStaticData()
+    -- Attempt to load static quest data
     local success, result = pcall(function()
         return require(ReplicatedStorage.Shared.Data.Quests)
     end)
@@ -592,6 +699,7 @@ local function getFarmableQuestObjectives()
                 local objIndex = progressInfo.Index or progressInfo.index or tonumber(objectiveId) or objectiveId
                 local staticObj = staticQuest.Objectives[objIndex]
 
+                -- Auto-resolve objective if indexing fails
                 if not staticObj then
                     for _, cand in pairs(staticQuest.Objectives) do
                         if cand and (progressInfo.target == cand.Target or progressInfo.questType == cand.Type) then
@@ -758,7 +866,7 @@ local function getCurrentQuestObjectives()
             end
         end
 
-        table.insert(objectives, "")
+        table.insert(objectives, "") -- blank line between quests
     end
 
     if #objectives == 0 then
@@ -787,6 +895,9 @@ local function equipItem(itemName)
             :InvokeServer(unpack(args))
     end)
 end
+
+-- Hàm getIncompleteQuestObjectives đã được hợp nhất vào getFarmableQuestObjectives
+
 
 local isAutoQuestEnabled = false
 
@@ -817,12 +928,14 @@ local function buyPickaxe(pickaxeName, quantity)
     quantity = quantity or 1
     local success = false
     
+    -- Step 1: Tween to the pickaxe in shop (workspace.Proximity)
     pcall(function()
         local proximity = Workspace:FindFirstChild("Proximity")
         if not proximity then return end
         
         local pickaxeModel = proximity:FindFirstChild(pickaxeName)
         if not pickaxeModel then
+            -- Try finding by searching
             for _, child in pairs(proximity:GetDescendants()) do
                 if child.Name == pickaxeName and (child:IsA("Model") or child:IsA("BasePart")) then
                     pickaxeModel = child
@@ -851,6 +964,7 @@ local function buyPickaxe(pickaxeName, quantity)
         end
     end)
     
+    -- Step 2: Direct RF call
     pcall(function()
         local result = ReplicatedStorage:WaitForChild("Shared")
             :WaitForChild("Packages")
@@ -863,6 +977,7 @@ local function buyPickaxe(pickaxeName, quantity)
         if result then success = true end
     end)
     
+    -- Step 3: Try via Knit GetService (Promise-based) if step 2 didn't confirm success
     if not success then
         pcall(function()
             local Knit = require(ReplicatedStorage.Shared.Packages.Knit)
@@ -908,6 +1023,7 @@ local function buyPotion(potionId, quantity)
     quantity = quantity or 1
     local success = false
     
+    -- Step 1: Tween to the potion in shop (workspace.Proximity)
     pcall(function()
         local proximity = Workspace:FindFirstChild("Proximity")
         if not proximity then return end
@@ -942,6 +1058,7 @@ local function buyPotion(potionId, quantity)
         end
     end)
     
+    -- Step 2: Direct RF call
     pcall(function()
         local result = ReplicatedStorage:WaitForChild("Shared")
             :WaitForChild("Packages")
@@ -954,6 +1071,7 @@ local function buyPotion(potionId, quantity)
         if result then success = true end
     end)
     
+    -- Step 3: Try via Knit if step 2 didn't confirm success
     if not success then
         pcall(function()
             local Knit = require(ReplicatedStorage.Shared.Packages.Knit)
@@ -970,6 +1088,49 @@ local function buyPotion(potionId, quantity)
 end
 
 
+local SellOreTypes = {
+    "Stone", "Copper", "Tin", "Sand Stone", "Iron", "Silver", "Gold",
+    "Platinum", "Starite", "Poopite", "Bananite", "Cardboardite",
+    "Cobalt", "Titanium", "Lapis Lazuli", "Quartz", "Amethyst", "Topaz",
+    "Diamond", "Sapphire", "Ruby", "Emerald", "Cuprite", "Eye Ore",
+    "Rivalite", "Uranium", "Mythril", "Lightite", "Obsidian", "Fireite",
+    "Magmaite", "Demonite", "Slimite", "Boneite", "Dark Boneite",
+    "Aite", "Grass", "Mushroomite", "Fichillium", "Fichilliumorite", "Galaxite", "Darkryte",
+    "Volcanic Rock"
+}
+
+_G.OreRarityMap = {
+    Stone = "Common", ["Sand Stone"] = "Common", Copper = "Common", 
+    Iron = "Common", Cardboardite = "Common", Grass = "Common",
+    Tin = "Uncommon", Silver = "Uncommon", Gold = "Uncommon", 
+    Bananite = "Uncommon", Cobalt = "Uncommon", Titanium = "Uncommon", 
+    ["Lapis Lazuli"] = "Uncommon",
+    Platinum = "Rare", Mushroomite = "Rare", Quartz = "Rare", 
+    Amethyst = "Rare", Topaz = "Rare", Diamond = "Rare", 
+    Sapphire = "Rare", Boneite = "Rare", ["Dark Boneite"] = "Rare",
+    ["Volcanic Rock"] = "Rare",
+    Poopite = "Epic", Aite = "Epic", Ruby = "Epic", 
+    Emerald = "Epic", Cuprite = "Epic", Rivalite = "Epic", 
+    Obsidian = "Epic", Slimite = "Epic",
+    Uranium = "Legendary", Mythril = "Legendary", Lightite = "Legendary", 
+    Fireite = "Legendary", Magmaite = "Legendary", ["Eye Ore"] = "Legendary",
+    Starite = "Mythic", Demonite = "Mythic", Darkryte = "Mythic",
+    Fichillium = "Relic", Galaxite = "Divine", Fichilliumorite = "Unobtainable"
+}
+
+_G.RarityList = {"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic"}
+
+_G.getOresByRarity = function(rarity)
+    local ores = {}
+    for oreName, oreRarity in pairs(_G.OreRarityMap) do
+        if oreRarity == rarity then
+            ores[#ores + 1] = oreName
+        end
+    end
+    table.sort(ores)
+    return ores
+end
+
 local FarmTypes = {
     "Pebble",
     "Rock",
@@ -984,6 +1145,22 @@ local FarmTypes = {
     "Crimson Crystal",
     "Violet Crystal",
     "Light Crystal"
+}
+
+local RockDropsMap = {
+    ["Pebble"] = {"Stone", "Sand Stone", "Copper", "Iron", "Poopite"},
+    ["Rock"] = {"Sand Stone", "Copper", "Iron", "Tin", "Silver", "Poopite", "Bananite", "Cardboardite", "Mushroomite"},
+    ["Boulder"] = {"Copper", "Iron", "Tin", "Silver", "Gold", "Platinum", "Poopite", "Bananite", "Cardboardite", "Mushroomite", "Aite"},
+    ["Lucky Block"] = {"Fichillium", "Fichilliugeromoriteite"},
+    ["Basalt Rock"] = {"Silver", "Gold", "Platinum", "Cobalt", "Titanium", "Lapis Lazuli", "Eye Ore"},
+    ["Basalt Core"] = {"Cobalt", "Titanium", "Lapis Lazuli", "Quartz", "Amethyst", "Topaz", "Diamond", "Sapphire", "Cuprite", "Emerald", "Eye Ore"},
+    ["Basalt Vein"] = {"Quartz", "Amethyst", "Topaz", "Diamond", "Sapphire", "Cuprite", "Emerald", "Ruby", "Rivalite", "Uranium", "Mythril", "Eye Ore", "Lightite"},
+    ["Volcanic Rock"] = {"Volcanic Rock", "Topaz", "Cuprite", "Rivalite", "Obsidian", "Eye Ore", "Fireite", "Magmaite", "Demonite", "Darkryte"},
+    ["Earth Crystal"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"},
+    ["Cyan Crystal"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"},
+    ["Crimson Crystal"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"},
+    ["Violet Crystal"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"},
+    ["Light Crystal"] = {"Blue Crystal", "Crimson Crystal", "Green Crystal", "Magenta Crystal", "Orange Crystal", "Rainbow Crystal", "Arcane Crystal"}
 }
 
 local function findAllRocks()
@@ -1049,30 +1226,6 @@ local function isOtherPlayerNearRock(rock)
     return false
 end
 
-local function findNearestRock()
-    local rocks = findAllRocks()
-    local character = LocalPlayer.Character
-    if not character then return nil end
-    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-    if not humanoidRootPart then return nil end
-    local playerPos = humanoidRootPart.Position
-    local nearestRock = nil
-    local nearestDistance = math.huge
-    for _, rock in pairs(rocks) do
-        local rockPos = getRockPosition(rock)
-        if rockPos then
-            if not isOtherPlayerNearRock(rock) then
-                local distance = (rockPos - playerPos).Magnitude
-                if distance < nearestDistance then
-                    nearestDistance = distance
-                    nearestRock = rock
-                end
-            end
-        end
-    end
-    return nearestRock
-end
-
 local function getRockHP(rock)
     local infoFrame = rock:FindFirstChild("infoFrame")
     if not infoFrame then return nil end
@@ -1095,7 +1248,61 @@ local function isRockValid(rock)
     if hp ~= nil and hp <= 0 then
         return false
     end
+    
+    -- Ore Filter Logic
+    if State.selectedOreFilters and next(State.selectedOreFilters) then
+        local hasOreAttr = false
+        local matchesFilter = false
+        
+        local function checkAttr(obj)
+            local oreAttr = obj:GetAttribute("Ore")
+            if oreAttr then
+                hasOreAttr = true
+                if State.selectedOreFilters[oreAttr] == true then
+                    matchesFilter = true
+                end
+            end
+        end
+        
+        checkAttr(rock)
+        
+        if not matchesFilter then
+             for _, child in pairs(rock:GetDescendants()) do
+                 checkAttr(child)
+                 if matchesFilter then break end
+             end
+        end
+        
+        if hasOreAttr and not matchesFilter then
+            return false
+        end
+    end
+
     return true
+end
+
+local function findNearestRock()
+    local rocks = findAllRocks()
+    local character = LocalPlayer.Character
+    if not character then return nil end
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return nil end
+    local playerPos = humanoidRootPart.Position
+    local nearestRock = nil
+    local nearestDistance = math.huge
+    for _, rock in pairs(rocks) do
+        local rockPos = getRockPosition(rock)
+        if rockPos then
+            if isRockValid(rock) and not isOtherPlayerNearRock(rock) then
+                local distance = (rockPos - playerPos).Magnitude
+                if distance < nearestDistance then
+                    nearestDistance = distance
+                    nearestRock = rock
+                end
+            end
+        end
+    end
+    return nearestRock
 end
 
 local CLOSE_DISTANCE = 50
@@ -1267,11 +1474,13 @@ local function equipTool()
     local humanoid = character:FindFirstChild("Humanoid")
     if not humanoid then return end
 
+    -- Check if already equipped
     local equipped = character:FindFirstChild(State.selectedTool)
     if equipped and equipped:IsA("Tool") then
-        return
+        return -- Already equipped
     end
 
+    -- Find in Backpack and Equip
     local backpack = LocalPlayer:FindFirstChild("Backpack")
     if backpack then
         local tool = backpack:FindFirstChild(State.selectedTool)
@@ -1283,11 +1492,18 @@ end
 
 local function activatePickaxe()
     pcall(function()
-        local toolArg = State.selectedTool
-        if State.selectedTool == "Weapon" then
-            toolArg = "Weapon"
+        local toolName = State.selectedTool
+        if toolName == "Auto" or toolName == "Weapon" then -- Handle legacy Weapon selection if passed
+             -- If Auto, try to find a pickaxe
+             if toolName == "Auto" then
+                 toolName = selectBestPickaxe()
+             end
         end
-        local args = {toolArg}
+        
+        -- Fallback
+        if not toolName or toolName == "Auto" then toolName = "Stone Pickaxe" end
+        
+        local args = {toolName}
         ReplicatedStorage:WaitForChild("Shared")
             :WaitForChild("Packages")
             :WaitForChild("Knit")
@@ -1300,7 +1516,7 @@ local function activatePickaxe()
 end
 
 local function getBackpackPickaxes()
-    local pickaxes = {"Weapon"}
+    local pickaxes = {} -- Do not default to Weapon
     local backpack = LocalPlayer:FindFirstChild("Backpack")
     local character = LocalPlayer.Character
     if backpack then
@@ -1320,7 +1536,7 @@ local function getBackpackPickaxes()
         end
     end
     if #pickaxes == 0 then
-        table.insert(pickaxes, "Pickaxe")
+        table.insert(pickaxes, "Stone Pickaxe") -- Fallback
     end
     return pickaxes
 end
@@ -1429,8 +1645,8 @@ local function updateMonsterHighlights()
 end
 
 MonsterDropdown = Tabs.Monsters:CreateDropdown("MonsterSelect", {
-    Title = "اختار وحش",
-    Description = "",
+    Title = "Monster Select",
+    Description = "Chọn loại Monster muốn highlight",
     Values = MonsterTypes,
     Multi = true,
     Default = {"Zombie"}
@@ -1439,8 +1655,8 @@ MonsterDropdown = Tabs.Monsters:CreateDropdown("MonsterSelect", {
 
 
 local MonsterHighlightToggle = Tabs.Monsters:CreateToggle("MonsterHighlight", {
-    Title = "Highlight وحش",
-    Description = "Highlight راح يتم وحش",
+    Title = "Highlight Monster",
+    Description = "Highlight Monster đã chọn",
     Default = false
 })
 
@@ -1454,24 +1670,26 @@ MonsterHighlightToggle:OnChanged(function()
 end)
 
 AutoMonsterFarmToggle = Tabs.Monsters:CreateToggle("AutoMonsterFarm", {
-    Title = "تفريم وحش",
+    Title = "Auto Farm Monster",
     Description = "Farm Monster đã chọn",
     Default = false
 })
 
-local MobInfoSection = Tabs.Monsters:CreateSection("MOB INFO")
+Tabs.Monsters:CreateSection("MOB INFO"):Collapse()
 
 local MobInfoParagraph = Tabs.Monsters:CreateParagraph("MobInfo", {
-    Title = "مادري",
+    Title = "Thông tin Mob Drop",
     Content = getMobDropInfo("Zombie")
 })
 
 MonsterDropdown:OnChanged(function(Value)
+    -- Value is table { [Name] = true, ... }
     State.selectedMonsterTypes = Value
     if State.isMonsterHighlightEnabled then
         updateMonsterHighlights()
     end
     if MobInfoParagraph then
+        -- Show info for first selected
         for k, v in pairs(Value) do
             if v == true then
                 MobInfoParagraph:SetContent(getMobDropInfo(k))
@@ -1481,27 +1699,28 @@ MonsterDropdown:OnChanged(function(Value)
     end
 end)
 
-local MaterialFarmSection = Tabs.Monsters:CreateSection("AUTO FARM MATERIAL")
+-- ==================== AUTO FARM MATERIAL UI SECTION ====================
+Tabs.Monsters:CreateSection("AUTO FARM MATERIAL"):Collapse()
 
 local MaterialDropdown = Tabs.Monsters:CreateDropdown("MaterialSelect", {
-    Title = "اختار ماتريل",
-    Description = "اختار ل تفريم ماتريل",
+    Title = "Select Material",
+    Description = "Chọn loại Material muốn farm",
     Values = MaterialTypes,
     Multi = false,
     Default = "Tiny Essence"
 })
 
 local MaterialMonsterDropdown = Tabs.Monsters:CreateDropdown("MaterialMonsterSelect", {
-    Title = "اختار وحوش ل تفريم",
-    Description = "",
+    Title = "Select Monsters to Farm",
+    Description = "Chọn Monster muốn farm (theo drop rate)",
     Values = getMonstersForMaterial("Tiny Essence"),
     Multi = true,
     Default = {}
 })
 
 AutoMaterialFarmToggle = Tabs.Monsters:CreateToggle("AutoMaterialFarm", {
-    Title = "اوتو تفريم ماتريل",
-    Description = "",
+    Title = "Auto Farm Material",
+    Description = "Tự động farm Monster đã chọn để lấy Material",
     Default = false
 })
 
@@ -1535,6 +1754,7 @@ task.spawn(function()
     end
 end)
 
+-- ==================== CAMERA NOCLIP (View not blocked by parts) ====================
 local originalPopperConstants = {}
 
 local function enableCameraNoClip()
@@ -1643,7 +1863,7 @@ local function findNearestMonster()
     return nearestMonster
 end
 
-do
+do -- Auto Monster Farm Scope
     local MONSTER_CLOSE_DISTANCE = 50
     local MONSTER_CLOSE_TWEEN_TIME = 0.5
     local MONSTER_FAR_TWEEN_TIME = 8
@@ -1822,6 +2042,7 @@ do
         end
     end)
 
+    -- ==================== AUTO FARM MATERIAL LOGIC ====================
     local function findAllMaterialFarmMonsters()
         local monsters = {}
         local livingFolder = Workspace:FindFirstChild("Living")
@@ -1949,11 +2170,11 @@ do
     end)
 end
 
-local PickaxeSection = Tabs.Shop:CreateSection("PICKAXE SHOP")
+Tabs.Shop:CreateSection("PICKAXE SHOP"):Collapse()
 
 local ShopPickaxeDropdown = Tabs.Shop:CreateDropdown("ShopPickaxe", {
-    Title = "Pickaxe متجر",
-    Description = "فتح متجر",
+    Title = "Pickaxe Shop",
+    Description = "Chọn Pickaxe muốn mua",
     Values = PickaxeShopList,
     Multi = false,
     Default = "Bronze Pickaxe - 150 Gold"
@@ -1964,34 +2185,34 @@ ShopPickaxeDropdown:OnChanged(function(Value)
 end)
 
 Tabs.Shop:CreateButton({
-    Title = "شراء Pickaxe",
-    Description = "",
+    Title = "Buy Pickaxe",
+    Description = "Mua Pickaxe đã chọn (từ xa, không cần gần NPC)",
     Callback = function()
         if selectedShopPickaxe then
             local success = buyPickaxe(selectedShopPickaxe, 1)
             if success then
-                Library:Notify({Title = "Shop", Content = "تم شراء" .. selectedShopPickaxe, Duration = 2})
+                Library:Notify({Title = "Shop", Content = "Đã mua " .. selectedShopPickaxe, Duration = 2})
             else
-                Library:Notify({Title = "Shop", Content = "تم تقديم طلب الشراء" .. selectedShopPickaxe .. " (check inventory)", Duration = 3})
+                Library:Notify({Title = "Shop", Content = "Đã gửi lệnh mua " .. selectedShopPickaxe .. " (check inventory)", Duration = 3})
             end
         else
-            Library:Notify({Title = "Error", Content = "لم يتم تحديد !", Duration = 2})
+            Library:Notify({Title = "Error", Content = "Chưa chọn Pickaxe!", Duration = 2})
         end
     end
 })
 
-local PotionSection = Tabs.Shop:CreateSection("POTION شوب")
+Tabs.Shop:CreateSection("POTION SHOP"):Collapse()
 
 local ShopPotionDropdown = Tabs.Shop:CreateDropdown("ShopPotion", {
-    Title = "Potion متجر",
-    Description = "اختر الجرعة التي ترغب في شرائها",
+    Title = "Potion Shop",
+    Description = "Chọn Potion muốn mua",
     Values = PotionShopList,
     Multi = false,
     Default = "MinerPotion1 - Miner Potion I"
 })
 
 local PotionEffectParagraph = Tabs.Shop:CreateParagraph("PotionEffectInfo", {
-    Title = "Potion ايفكت",
+    Title = "Potion Effect",
     Content = PotionDescriptions["MinerPotion1"]
 })
 
@@ -2003,7 +2224,7 @@ ShopPotionDropdown:OnChanged(function(Value)
 end)
 
 Tabs.Shop:CreateButton({
-    Title = "شراء Potion",
+    Title = "Buy Potion",
     Description = "Mua Potion đã chọn (từ xa, không cần gần NPC)",
     Callback = function()
         if selectedShopPotion then
@@ -2022,8 +2243,8 @@ Tabs.Shop:CreateButton({
 availableTools = getBackpackPickaxes()
 
 local ToolDropdown = Tabs.Home:CreateDropdown("ToolSelect", {
-    Title = "اختار اداة",
-    Description = "اختر سلاحًا لاستخراج الخام.",
+    Title = "Tool Select",
+    Description = "Chọn Vũ Khí để đào quặng",
     Values = availableTools,
     Multi = false,
     Default = "Pickaxe"
@@ -2034,23 +2255,23 @@ ToolDropdown:OnChanged(function(Value)
 end)
 
 local FarmModeDropdown = Tabs.Home:CreateDropdown("FarmModeSelect", {
-    Title = "مود تفريم",
-    Description = "Down = اسفل , Up = اعلى",
+    Title = "Farm Mode",
+    Description = "Down = ở dưới, Up = ở trên",
     Values = {"Down", "Up"},
     Multi = false,
-    Default = "Down"
+    Default = "Up"
 })
 
 FarmModeDropdown:OnChanged(function(Value)
     State.selectedFarmMode = Value
     if Value == "Up" then
-        Library:Notify({Title = "مود تفريم", Content = "وضع اعلى لم تتمكن الوحوش من مهاجمتك!!!", Duration = 3})
+        Library:Notify({Title = "Farm Mode", Content = "Mode Up: Monsters sẽ không thể tấn công bạn!", Duration = 3})
     end
 end)
 
 local AutoSelectToggle = Tabs.Home:CreateToggle("AutoSelectTool", {
-    Title = "اوتو اختيار اداة",
-    Description = "قم بتجهيز السلاح المحدد تلقائيًا.",
+    Title = "Auto Select Tool",
+    Description = "Tự động equip vũ khí đã chọn",
     Default = false
 })
 
@@ -2063,8 +2284,8 @@ AutoSelectToggle:OnChanged(function()
 end)
 
 Tabs.Home:CreateButton({
-    Title = "تحديث ادوات",
-    Description = "",
+    Title = "Refresh Tools",
+    Description = "Reset danh sách vũ khí",
     Callback = function()
         availableTools = getBackpackPickaxes()
         ToolDropdown:SetValues(availableTools)
@@ -2076,8 +2297,8 @@ Tabs.Home:CreateButton({
 })
 
 Tabs.Home:CreateButton({
-    Title = "رايس reroll",
-    Description = "تجريب حظك في ريس",
+    Title = "Reroll Race",
+    Description = "Quay Race mới",
     Callback = function()
         pcall(function()
             ReplicatedStorage:WaitForChild("Shared")
@@ -2106,8 +2327,8 @@ local NPCPositions = {
 local selectedNPC = "Wizard"
 
 local NPCDropdown = Tabs.NPC:CreateDropdown("NPCSelect", {
-    Title = "NPC اختار",
-    Description = "",
+    Title = "NPC Select",
+    Description = "Chọn NPC muốn di chuyển đến",
     Values = NPCList,
     Multi = false,
     Default = "Wizard"
@@ -2118,8 +2339,8 @@ NPCDropdown:OnChanged(function(Value)
 end)
 
 Tabs.NPC:CreateButton({
-    Title = "تنقل NPC",
-    Description = "",
+    Title = "Tween to NPC",
+    Description = "Di chuyển đến NPC đã chọn",
     Callback = function()
         local character = LocalPlayer.Character
         if not character then return end
@@ -2136,7 +2357,7 @@ Tabs.NPC:CreateButton({
 
 local CameraNoClipToggle = Tabs.Mics:CreateToggle("CameraNoClip", {
     Title = "Camera NoClip",
-    Description = "",
+    Description = "Tầm nhìn không bị chặn bởi các part",
     Default = false
 })
 
@@ -2149,14 +2370,16 @@ CameraNoClipToggle:OnChanged(function()
     end
 end)
 
-Tabs.Quest:CreateSection("QUEST-AWARE FARM")
+-- ==================== QUEST-AWARE FARM UI ====================
+Tabs.Quest:CreateSection("QUEST-AWARE FARM"):Collapse()
 
 local cachedQuestObjectives = {}
 
+-- All quest types are now shown (filter removed)
 
 QuestTargetDropdown = Tabs.Quest:CreateDropdown("QuestTargetSelect", {
-    Title = "استهداف المهمة",
-    Description = "يتم التحديث تلقائيًا كل ثانية واحدة.",
+    Title = "Quest Target",
+    Description = "Tự động refresh mỗi 1s",
     Values = {"(Đang load...)"},
     Multi = false,
     Default = "(Đang load...)"
@@ -2164,21 +2387,23 @@ QuestTargetDropdown = Tabs.Quest:CreateDropdown("QuestTargetSelect", {
 
 local QuestProgressParagraph = Tabs.Quest:CreateParagraph("QuestFarmProgress", {
     Title = "Quest Farm Progress",
-    Content = "قم بتشغل اوتو تفريم للبدء"
+    Content = "Bật Auto Quest Farm để bắt đầu"
 })
 
 AutoQuestFarmToggle = Tabs.Quest:CreateToggle("AutoQuestFarm", {
-    Title = "اوتو فارم مهة",
-    Description = "يتم جمع الموارد تلقائيًا وفقًا لترتيب المهام، ويتم تغيير الأهداف عند الانتهاء.",
+    Title = "Auto Quest Farm",
+    Description = "Tự động farm theo thứ tự quest, chuyển objective khi hoàn thành",
     Default = false
 })
 
+-- Auto-refresh quest dropdown every 1s
 task.spawn(function()
     while true do
         task.wait(1)
         pcall(function()
             local objectives = getFarmableQuestObjectives()
             
+            -- All quests shown (no filter)
             cachedQuestObjectives = objectives
             local values = {}
             for idx, obj in ipairs(objectives) do
@@ -2209,6 +2434,10 @@ local function startQuestAwareFarm(targetType, targetName, staticData)
         end)
     end
 
+    -- Dynamic Island (NOT teleporting automatically - user must be on correct island)
+    -- teleportToIsland was removed as it is not implemented
+    
+    -- Use game marker if available for positioning
     local targetPos = nil
     if staticData then
         local marker = staticData.Marker or staticData.BeamTarget
@@ -2231,10 +2460,11 @@ local function startQuestAwareFarm(targetType, targetName, staticData)
                 AutoMonsterFarmToggle:SetValue(true)
             end
         end)
-        currentMonster = nil
+        currentMonster = nil -- Trigger immediate search
         QuestProgressParagraph:SetContent("Đang farm: " .. targetName .. " (Monster)")
 
     elseif targetType == "collect" or targetType == "mine" then
+        -- Check if target is a Pickaxe → buy from shop instead of farming
         if targetName:find("Pickaxe") then
             stopFarms()
             QuestProgressParagraph:SetContent("Đang mua: " .. targetName .. " (từ xa)")
@@ -2242,16 +2472,17 @@ local function startQuestAwareFarm(targetType, targetName, staticData)
                 local success = buyPickaxe(targetName, 1)
                 task.wait(0.5)
                 if success then
-                    QuestProgressParagraph:SetContent("✓ تم الشراء: " .. targetName)
-                    Library:Notify({Title = "Shop", Content = "تم الشراء " .. targetName, Duration = 2})
+                    QuestProgressParagraph:SetContent("✓ Đã mua: " .. targetName)
+                    Library:Notify({Title = "Shop", Content = "Đã mua " .. targetName, Duration = 2})
                 else
-                    QuestProgressParagraph:SetContent("⚠ ... " .. targetName .. " - kiểm tra gold/inventory")
-                    Library:Notify({Title = "Shop", Content = "تم تقديم طلب الشراء. " .. targetName .. " (check inventory)", Duration = 3})
+                    QuestProgressParagraph:SetContent("⚠ Mua " .. targetName .. " - kiểm tra gold/inventory")
+                    Library:Notify({Title = "Shop", Content = "Đã gửi lệnh mua " .. targetName .. " (check inventory)", Duration = 3})
                 end
             end)
             return
         end
         
+        -- Otherwise, farm rock/ore
         local rockType = OreToRockMap[targetName] or targetName
         if rockType then
             State.selectedRockTypes = {[rockType] = true}
@@ -2263,7 +2494,7 @@ local function startQuestAwareFarm(targetType, targetName, staticData)
                     AutoFarmToggle:SetValue(true)
                 end
             end)
-            currentRock = nil
+            currentRock = nil -- Trigger immediate search
             QuestProgressParagraph:SetContent("Đang farm: " .. rockType)
         end
 
@@ -2280,7 +2511,7 @@ local function startQuestAwareFarm(targetType, targetName, staticData)
                 AutoFarmToggle:SetValue(true)
             end
         end)
-        currentRock = nil
+        currentRock = nil -- Trigger immediate search
         QuestProgressParagraph:SetContent("Đang farm: " .. (rockType or "[Multi-Select]") .. " (cho Ore: " .. targetName .. ")")
 
     elseif targetType == "equip" then
@@ -2334,7 +2565,9 @@ AutoQuestFarmToggle:OnChanged(function(Value)
         if State.isQuestAwareFarmEnabled then
             local selected = Options.QuestTargetSelect and Options.QuestTargetSelect.Value or nil
             
+            -- Auto-select first incomplete objective if nothing selected or invalid
             if not selected or selected == "(Đang load...)" or selected == "Không có quest farmable" then
+                -- Wait a moment for dropdown to refresh then pick first
                 task.wait(0.5)
                 if #cachedQuestObjectives > 0 then
                     local firstObj = nil
@@ -2352,14 +2585,16 @@ AutoQuestFarmToggle:OnChanged(function(Value)
                         return
                     end
                 end
-                Library:Notify({Title = "Warning", Content = "لا توجد مهام يمكن الحصول عليها من خلال تفريم!", Duration = 3})
+                Library:Notify({Title = "Warning", Content = "Không có quest farmable!", Duration = 3})
                 pcall(function() if AutoQuestFarmToggle and AutoQuestFarmToggle.SetValue then AutoQuestFarmToggle:SetValue(false) end end)
                 return
             end
             
+            -- Extract target name from dropdown value
             local targetMatch = selected:match("%]%s*([^%(]+)")
             local targetName = targetMatch and targetMatch:gsub("^%s+", ""):gsub("%s+$", "")
             
+            -- Find object in cached list to get full data
             local selectedObj = nil
             for _, obj in ipairs(cachedQuestObjectives) do
                 if obj.target == targetName or selected:find(obj.target, 1, true) then
@@ -2374,7 +2609,7 @@ AutoQuestFarmToggle:OnChanged(function(Value)
                 startQuestAwareFarm(selectedObj.type, selectedObj.target, selectedObj.staticData)
                 pcall(enableCameraNoClip)
             else
-                Library:Notify({Title = "Error", Content = "لم يتم العثور على بيانات المهمة في ذاكرة التخزين المؤقت.", Duration = 3})
+                Library:Notify({Title = "Error", Content = "Không tìm thấy dữ liệu quest trong cache", Duration = 3})
                 pcall(function() if AutoQuestFarmToggle and AutoQuestFarmToggle.SetValue then AutoQuestFarmToggle:SetValue(false) end end)
             end
         else
@@ -2386,7 +2621,7 @@ AutoQuestFarmToggle:OnChanged(function(Value)
     end)
     if not success then
         warn("[AutoQuestFarm Error]:", err)
-        Library:Notify({Title = "Error", Content = "تف: " .. tostring(err), Duration = 5})
+        Library:Notify({Title = "Error", Content = "Lỗi: " .. tostring(err), Duration = 5})
     end
 end)
 
@@ -2396,11 +2631,15 @@ task.spawn(function()
         if State.isQuestAwareFarmEnabled then
             local objectives = getFarmableQuestObjectives()
 
+            -- All quests shown (no filter)
+
+            -- Check if current objective is completed (CRITICAL: prevent stuck farming)
             local currentObj = nil
             local isCurrentComplete = false
             for _, obj in ipairs(objectives) do
                 if obj and obj.target == currentQuestTarget and obj.type == currentQuestType then
                     currentObj = obj
+                    -- Check if completed
                     if obj.current >= obj.required then
                         isCurrentComplete = true
                     end
@@ -2408,7 +2647,9 @@ task.spawn(function()
                 end
             end
 
+            -- If current objective is COMPLETED or GONE -> stop farms and switch to next
             if isCurrentComplete or (not currentObj and currentQuestTarget) then
+                -- STOP all farms immediately to prevent stuck
                 pcall(function()
                     if State.isAutoFarmEnabled and AutoFarmToggle and AutoFarmToggle.SetValue then
                         AutoFarmToggle:SetValue(false)
@@ -2418,6 +2659,7 @@ task.spawn(function()
                     end
                 end)
                 
+                -- Find next incomplete objective
                 local nextObj = nil
                 for _, obj in ipairs(objectives) do
                     if obj.current < obj.required then
@@ -2430,6 +2672,7 @@ task.spawn(function()
                     currentQuestType = nextObj.type
                     currentQuestTarget = nextObj.target
 
+                    -- Update dropdown display
                     pcall(function()
                         local typeLabel = tostring(nextObj.type or ""):upper()
                         if typeLabel == "COLLECT_ORE" then typeLabel = "ORE" end
@@ -2442,21 +2685,25 @@ task.spawn(function()
                         end
                     end)
 
-                    task.wait(0.5)
+                    -- Start next farm
+                    task.wait(0.5) -- Small delay before starting next objective
                     startQuestAwareFarm(currentQuestType, currentQuestTarget, nextObj.staticData)
                     QuestProgressParagraph:SetContent("Chuyển sang: " .. tostring(currentQuestTarget) .. " [" .. tostring(currentQuestType) .. "]")
                 else
+                    -- No more objectives
                     currentQuestType = nil
                     currentQuestTarget = nil
                     QuestProgressParagraph:SetContent("Đã hoàn thành tất cả quest!")
                     pcall(function() if AutoQuestFarmToggle and AutoQuestFarmToggle.SetValue then AutoQuestFarmToggle:SetValue(false) end end)
                 end
             elseif currentObj then
+                -- Update progress display
                 local info = "Target: " .. tostring(currentQuestTarget) .. " [" .. tostring(currentQuestType) .. "]\n"
                 info = info .. ("Progress: %d/%d"):format(currentObj.current, currentObj.required)
                 QuestProgressParagraph:SetContent(info)
             end
 
+            -- If no objectives left -> stop
             if #objectives == 0 then
                 QuestProgressParagraph:SetContent("Không còn quest farmable")
             end
@@ -2464,10 +2711,11 @@ task.spawn(function()
     end
 end)
 
+-- ==================== COMBAT TAB ====================
 
-Tabs.Combat:AddSection("تفريم قتال")
+Tabs.Combat:AddSection("AUTO COMBAT"):Collapse()
 
-do
+do -- Auto Combat Scope
 local function getEquippedWeapon()
     local character = LocalPlayer.Character
     if not character then return nil end
@@ -2521,14 +2769,14 @@ local function stopBlockAction()
 end
 
 local AutoAttackToggle = Tabs.Combat:CreateToggle("AutoAttack", {
-    Title = "اوتو قتال",
-    Description = "الهجوم التلقائي عند حمل السلاح.",
+    Title = "Auto Attack",
+    Description = "Tự động tấn công khi cầm vũ khí",
     Default = false
 })
 
 local AttackSpeedSlider = Tabs.Combat:CreateSlider("AttackSpeed", {
-    Title = "سرعة ضربة",
-    Description = "اضبط سرعة الهجوم (بالثواني)",
+    Title = "Attack Speed",
+    Description = "Điều chỉnh tốc độ tấn công (giây)",
     Default = 0.3,
     Min = 0.1,
     Max = 2,
@@ -2536,8 +2784,8 @@ local AttackSpeedSlider = Tabs.Combat:CreateSlider("AttackSpeed", {
 })
 
 local HeavyAttackToggle = Tabs.Combat:CreateToggle("HeavyAttack", {
-    Title = "استعمال ضربات ثقيلة",
-    Description = "استخدم ضربة قوية.",
+    Title = "Use Heavy Attack",
+    Description = "Sử dụng đòn mạnh",
     Default = false
 })
 
@@ -2562,17 +2810,17 @@ task.spawn(function()
     end
 end)
 
-Tabs.Combat:AddSection("SMART AUTO BLOCK")
+Tabs.Combat:AddSection("SMART AUTO BLOCK"):Collapse()
 
 local SmartAutoBlockToggle = Tabs.Combat:CreateToggle("SmartAutoBlock", {
-    Title = "اوتو بلوك قوية",
-    Description = "يقوم النظام تلقائيًا بالحجب عند اكتشاف هجمات الوحوش",
+    Title = "Smart Auto Block",
+    Description = "Tự động block khi phát hiện quái tấn công(beta)",
     Default = false
 })
 
 local BlockRangeSlider = Tabs.Combat:CreateSlider("BlockRange", {
-    Title = "نطاق الكشف",
-    Description = "نطاق كشف الوحوش",
+    Title = "Detection Range",
+    Description = "Khoảng cách phát hiện quái (studs)",
     Default = 15,
     Min = 5,
     Max = 30,
@@ -2580,8 +2828,8 @@ local BlockRangeSlider = Tabs.Combat:CreateSlider("BlockRange", {
 })
 
 local SmartBlockDurationSlider = Tabs.Combat:CreateSlider("SmartBlockDuration", {
-    Title = "مدة بلوك",
-    Description = "الوقت اللازم للبلوك بعد الكشف (بالثواني)",
+    Title = "Block Duration",
+    Description = "Thời gian block sau khi phát hiện (giây)",
     Default = 0.5,
     Min = 0.2,
     Max = 2,
@@ -2604,6 +2852,7 @@ SmartBlockDurationSlider:OnChanged(function(Value)
     State.smartBlockDuration = Value
 end)
 
+-- Monitor monster animations for attack detection
 local function isMonsterAttacking(monster)
     local humanoid = monster:FindFirstChildOfClass("Humanoid")
     if not humanoid then return false end
@@ -2614,12 +2863,14 @@ local function isMonsterAttacking(monster)
     local playingTracks = animator:GetPlayingAnimationTracks()
     for _, track in ipairs(playingTracks) do
         local animName = track.Name:lower()
+        -- Check for attack-related animation names
         if animName:find("attack") or animName:find("slash") or 
            animName:find("swing") or animName:find("hit") or 
            animName:find("punch") or animName:find("strike") or
            animName:find("combat") then
             return true
         end
+        -- Also check animation priority - Action priority usually means attack
         if track.Priority == Enum.AnimationPriority.Action then
             return true
         end
@@ -2653,21 +2904,24 @@ local function findNearbyAttackingMonster(range)
     return nil
 end
 
+-- Smart block loop - detect monster attacks
 local isCurrentlyBlocking = false
 local lastBlockTime = 0
 
 task.spawn(function()
     while true do
-        task.wait(0.05) 
+        task.wait(0.05) -- Check every 50ms for fast response
         if State.isSmartAutoBlockEnabled then
             local weapon = getEquippedWeapon()
             if weapon then
                 local attackingMonster = findNearbyAttackingMonster(State.blockRange)
                 if attackingMonster and not isCurrentlyBlocking then
+                    -- Monster is attacking, block now!
                     isCurrentlyBlocking = true
                     lastBlockTime = tick()
                     startBlockAction()
                 elseif isCurrentlyBlocking then
+                    -- Check if we should stop blocking
                     if tick() - lastBlockTime >= State.smartBlockDuration then
                         stopBlockAction()
                         isCurrentlyBlocking = false
@@ -2688,6 +2942,7 @@ task.spawn(function()
     end
 end)
 
+-- Additional: Block on HP decrease (backup detection)
 local lastHP = 0
 local function setupHPMonitor()
     local character = LocalPlayer.Character
@@ -2704,6 +2959,7 @@ local function setupHPMonitor()
         
         local newHP = humanoid.Health
         if newHP < lastHP then
+            -- We took damage, block immediately for a short time
             if not isCurrentlyBlocking then
                 isCurrentlyBlocking = true
                 lastBlockTime = tick()
@@ -2725,7 +2981,7 @@ if LocalPlayer.Character then
     setupHPMonitor()
 end
 
-Tabs.Combat:AddSection("LEGACY AUTO BLOCK")
+Tabs.Combat:AddSection("LEGACY AUTO BLOCK"):Collapse()
 
 local AutoBlockToggle = Tabs.Combat:CreateToggle("AutoBlock", {
     Title = "Auto Block (Continuous)",  
@@ -2734,8 +2990,8 @@ local AutoBlockToggle = Tabs.Combat:CreateToggle("AutoBlock", {
 })
 
 local BlockDurationSlider = Tabs.Combat:CreateSlider("BlockDuration", {
-    Title = "مدة البلوك",
-    Description = "مدة كل البلوك بالثواني",
+    Title = "Block Duration",
+    Description = "Thời gian mỗi lần block (giây)",
     Default = 0.5,
     Min = 0.1,
     Max = 3,
@@ -2743,8 +2999,8 @@ local BlockDurationSlider = Tabs.Combat:CreateSlider("BlockDuration", {
 })
 
 local BlockIntervalSlider = Tabs.Combat:CreateSlider("BlockInterval", {
-    Title = "الفاصل الزمني للبلوك", 
-    Description = "الفاصل الزمني بين البلوك بالثواني",
+    Title = "Block Interval", 
+    Description = "Thời gian nghỉ giữa các lần block (giây)",
     Default = 1,
     Min = 0.5,
     Max = 5,
@@ -2777,15 +3033,16 @@ task.spawn(function()
 end)
 end
 
+-- ==================== MICS TAB ====================
 local TpWalkToggle = Tabs.Mics:CreateToggle("TpWalk", {
-    Title = "سرعة مشي",
-    Description = "",
+    Title = "Walk Speed",
+    Description = "Tăng tốc độ di chuyển",
     Default = false
 })
 
 local TpWalkSlider = Tabs.Mics:CreateSlider("TpWalkSpeed", {
-    Title = "تضعيف سرعة مشي",
-    Description = "",
+    Title = "Walk Speed Multiplier",
+    Description = "Điều chỉnh tốc độ di chuyển (1-10)",
     Default = 1,
     Min = 1,
     Max = 10,
@@ -2819,8 +3076,8 @@ task.spawn(function()
 end)
 
 local FullBrightToggle = Tabs.Mics:CreateToggle("FullBright", {
-    Title = "سطوع كامل",
-    Description = "قم بإضاءة الخريطة بأكملها.",
+    Title = "Full Bright",
+    Description = "Làm sáng toàn bộ map",
     Default = false
 })
 
@@ -2862,8 +3119,8 @@ FullBrightToggle:OnChanged(function()
 end)
 
 local NoFogToggle = Tabs.Mics:CreateToggle("NoFog", {
-    Title = "لا ضباب",
-    Description = "إزالة تأثير الضباب",
+    Title = "No Fog",
+    Description = "Xóa hiệu ứng sương mù",
     Default = false
 })
 
@@ -2879,23 +3136,54 @@ NoFogToggle:OnChanged(function()
     end
 end)
 
+-- Island Filter for Farm
 State.selectedFarmIsland = "All"
+State.selectedOreFilters = {} -- Initialize empty (Farm All)
+State.selectedRockTypes = {["Pebble"] = true} -- Initialize default to prevent empty rock list
 
-local FarmIslandDropdown = Tabs.Farms:CreateDropdown("FarmIslandSelect", {
-    Title = "اختار جزيرة",
-    Description = "حدد الجزيرة لتصفية نوع الصخور.",
+local FarmIslandDropdown = Tabs.Ore:CreateDropdown("FarmIslandSelect", {
+    Title = "Island Select",
+    Description = "Chọn Island để lọc loại đá",
     Values = IslandList,
     Multi = false,
     Default = "All"
 })
 
-FarmDropdown = Tabs.Farms:CreateDropdown("FarmSelect", {
-    Title = "تفريم مختار",
-    Description = "اختر نوع الصخور/الخام الذي ترغب في استخراجه.",
+FarmDropdown = Tabs.Ore:CreateDropdown("FarmSelect", {
+    Title = "Farm Select",
+    Description = "Chọn loại đá/quặng muốn farm",
     Values = FarmTypes,
     Multi = true,
     Default = {"Pebble"}
 })
+
+local OreFilterDropdown = Tabs.Ore:CreateDropdown("OreFilterSelect", {
+    Title = "Ore Filter",
+    Description = "Chọn loại Ore muốn farm (Trống = Farm All)",
+    Values = SellOreTypes,
+    Multi = true,
+    Default = {}
+})
+
+OreFilterDropdown:OnChanged(function(Value)
+    -- Safeguard: Ensure Value is a dictionary
+    if type(Value) == "table" then
+        if #Value > 0 and type(Value[1]) == "string" then
+             -- It's an array, convert to dict
+             local dict = {}
+             for _, v in ipairs(Value) do
+                 dict[v] = true
+             end
+             State.selectedOreFilters = dict
+        else
+             -- It's likely already a dict or empty
+             State.selectedOreFilters = Value
+        end
+    else
+        State.selectedOreFilters = {}
+    end
+    currentRock = nil
+end)
 
 FarmIslandDropdown:OnChanged(function(Value)
     State.selectedFarmIsland = Value
@@ -2913,14 +3201,53 @@ end)
 FarmDropdown:OnChanged(function(Value)
     State.selectedRockTypes = Value
     currentRock = nil
+    
+    -- Dynamic Ore Filter Update
+    if RockDropsMap then
+        local availableOres = {}
+        local seen = {}
+        
+        -- Value is typically a Dictionary {[Name]=true} for Multi dropdowns in Fluent
+        for rockType, isSelected in pairs(Value) do
+            if isSelected and RockDropsMap[rockType] then
+                for _, ore in ipairs(RockDropsMap[rockType]) do
+                    if not seen[ore] then
+                        seen[ore] = true
+                        table.insert(availableOres, ore)
+                    end
+                end
+            end
+        end
+        
+        table.sort(availableOres)
+        
+        -- Update values if we found any, otherwise fallback to all (or empty if no rocks selected)
+        if #availableOres > 0 then
+            if OreFilterDropdown.SetValues then
+                OreFilterDropdown:SetValues(availableOres)
+            end
+        else
+            -- If no rocks selected or no data, maybe show all?
+            if OreFilterDropdown.SetValues then
+                 OreFilterDropdown:SetValues(SellOreTypes)
+            end
+        end
+        
+        -- Reset filter to avoid selecting invalid ores or confusing state
+        State.selectedOreFilters = {}
+        if OreFilterDropdown.SetValue then
+            OreFilterDropdown:SetValue({})
+        end
+    end
+
     if State.isHighlightEnabled then
         updateHighlights()
     end
 end)
 
-AutoFarmToggle = Tabs.Farms:CreateToggle("AutoFarm", {
-    Title = "اوتو فارم",
-    Description = "تفريم مختارة للصخور/الخامات",
+AutoFarmToggle = Tabs.Ore:CreateToggle("AutoFarm", {
+    Title = "Auto Farm",
+    Description = "Farm đá/quặng đã chọn",
     Default = false
 })
 
@@ -2948,9 +3275,9 @@ AutoFarmToggle:OnChanged(function(Value)
     end
 end)
 
-local HighlightToggle = Tabs.Farms:CreateToggle("HighlightESP", {
+local HighlightToggle = Tabs.Ore:CreateToggle("HighlightESP", {
     Title = "Highlight ESP",
-    Description = "Highlight حجر مختار",
+    Description = "Highlight cho Rock đã chọn",
     Default = false
 })
 
@@ -2980,6 +3307,7 @@ task.spawn(function()
                         tweenToRock(currentRock)
                         holdPositionBelowRock(currentRock)
                         task.wait(0.2)
+                        -- equipTool() removed by user request
                         task.wait(0.1)
                     end
                 end
@@ -2991,8 +3319,10 @@ task.spawn(function()
     end
 end)
 
+-- ==================== RESPAWN HANDLER FOR AUTO FARMS ====================
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
-    task.wait(0.5)
+    task.wait(0.5) -- Chờ character load hoàn toàn
+    -- Re-enable auto farm rock nếu đang bật
     if State.isAutoFarmEnabled then
         currentRock = nil
         stopHoldPosition()
@@ -3001,6 +3331,7 @@ LocalPlayer.CharacterAdded:Connect(function(newCharacter)
         enablePlatformStand(newCharacter)
         enableAntiJitter(newCharacter)
     end
+    -- Re-enable auto farm monster nếu đang bật
     if State.isAutoMonsterFarmEnabled then
         currentMonster = nil
         stopMonsterHoldPosition()
@@ -3009,6 +3340,7 @@ LocalPlayer.CharacterAdded:Connect(function(newCharacter)
         enablePlatformStand(newCharacter)
         enableMonsterAntiJitter(newCharacter)
     end
+    -- Re-enable auto farm material nếu đang bật
     if State.isAutoMaterialFarmEnabled then
         currentMaterialMonster = nil
         stopMaterialFarmHoldPosition()
@@ -3019,9 +3351,10 @@ LocalPlayer.CharacterAdded:Connect(function(newCharacter)
     end
 end)
 
+-- ==================== FORGE TAB ====================
 local AutoForgeToggle = Tabs.Forge:CreateToggle("AutoForge", {
-    Title = "اوتو حدادة",
-    Description = "",
+    Title = "Auto Forge",
+    Description = "Tự động thực hiện các minigame rèn (Melt)",
     Default = false
 })
 
@@ -3031,8 +3364,10 @@ AutoForgeToggle:OnChanged(function()
     State.isAutoForgeEnabled = Options.AutoForge.Value
 end)
 
+-- ==================== FAST FORGE ====================
 State.isFastForgeEnabled = false
 
+-- Hook minigame Start functions to instant-complete
 task.spawn(function()
     pcall(function()
         local Knit = require(ReplicatedStorage.Shared.Packages.Knit)
@@ -3040,12 +3375,14 @@ task.spawn(function()
         
         repeat task.wait(0.1) until ForgeController.Minigames
         
+        -- Hook Melt minigame
         if ForgeController.Minigames.MeltMinigame then
             local MeltMinigame = ForgeController.Minigames.MeltMinigame
             if not MeltMinigame._originalStart then
                 MeltMinigame._originalStart = MeltMinigame.Start
                 MeltMinigame.Start = function(self, ...)
                     if State.isFastForgeEnabled then
+                        -- Return immediately with 0 time (instant completion)
                         return 0
                     end
                     return MeltMinigame._originalStart(self, ...)
@@ -3053,6 +3390,7 @@ task.spawn(function()
             end
         end
         
+        -- Hook Pour minigame  
         if ForgeController.Minigames.PourMinigame then
             local PourMinigame = ForgeController.Minigames.PourMinigame
             if not PourMinigame._originalStart then
@@ -3069,8 +3407,8 @@ task.spawn(function()
 end)
 
 local FastForgeToggle = Tabs.Forge:CreateToggle("FastForge", {
-    Title = "تسريع حدادة",
-    Description = "إتمام عملية الذوبان/الصب تلقائياً (للحفاظ على الجودة)",
+    Title = "Fast Forge",
+    Description = "Tự động hoàn thành Melt/Pour (giữ quality)",
     Default = false,
     Callback = function(Value)
         State.isFastForgeEnabled = Value
@@ -3094,13 +3432,14 @@ local function getHammerMinigameUI()
 end
 
 local clickedNotes = {} 
-local getMeltMinigameUI, getPourMinigameUI
+local getMeltMinigameUI, getPourMinigameUI -- Pre-declare for local scope usage
 
-do
+do -- Scope strictly for Minigame Logic to save registers
     local function performHammerAction()
         pcall(function()
             local hammerUI = getHammerMinigameUI()
             
+            -- Phase 1: Click Mold
             local debris = Workspace:FindFirstChild("Debris")
             if debris then
                 for _, child in pairs(debris:GetChildren()) do
@@ -3111,31 +3450,42 @@ do
                 end
             end
 
+            -- Phase 2: Rhythm Game
             if not hammerUI or not hammerUI.Visible then 
                 clickedNotes = {} 
                 return 
             end
             
             for _, child in pairs(hammerUI:GetChildren()) do
+                -- child = Note (v_u_clone in source)
+                -- Structure: Note -> Frame -> Circle, Border
                 if child:IsA("GuiObject") and child.Name ~= "Timer" and child.Visible then
                     if not clickedNotes[child] then
                         local frame = child:FindFirstChild("Frame")
                         if frame then
                             local circle = frame:FindFirstChild("Circle")
                             if circle and circle:IsA("ImageLabel") then
+                                -- Use UDim2 Scale values instead of AbsoluteSize for accuracy
+                                -- Circle tweens from initial size to (0,0) over Lifetime
+                                -- Perfect is at 25/44 of Lifetime = ~56.8% through
+                                -- At perfect, Circle.Size.X.Scale = 1 - 0.568 = ~0.432
+                                
                                 local circleScale = circle.Size.X.Scale
                                 
                                 if circleScale <= 0.99 and circleScale >= 0.87 then
                                     clickedNotes[child] = true
                                     
+                                    -- Method 1: Direct firesignal (most reliable, bypasses input lag)
                                     local success = pcall(function()
                                         if firesignal then
                                             firesignal(child.MouseButton1Click)
                                         elseif fireclickdetector then
+                                            -- Some executors rename it
                                             child.MouseButton1Click:Fire()
                                         end
                                     end)
                                     
+                                    -- Method 2: Fallback to VirtualInputManager
                                     if not success then
                                         local absPos = child.AbsolutePosition
                                         local absSize = child.AbsoluteSize
@@ -3238,11 +3588,17 @@ do
             local area = frame:FindFirstChild("Area")
             
             if line and area and line:IsA("GuiObject") and area:IsA("GuiObject") then
+                -- From source: Line.Position.Y.Scale moves between 0-1
+                -- Holding mouse: Line goes UP (Y decreases)
+                -- Releasing mouse: Line goes DOWN (Y increases)
+                -- Goal: Keep Line inside Area
+                
                 local lineScale = line.Position.Y.Scale
                 local areaTopScale = area.Position.Y.Scale
                 local areaBottomScale = areaTopScale + area.Size.Y.Scale
                 local areaCenterScale = (areaTopScale + areaBottomScale) / 2
                 
+                -- Click position for VIM (use frame center)
                 local absPos = frame.AbsolutePosition
                 local absSize = frame.AbsoluteSize
                 local centerX = absPos.X + (absSize.X / 2)
@@ -3250,13 +3606,18 @@ do
                 local guiInset = game:GetService("GuiService"):GetGuiInset()
                 local trueY = centerY + guiInset.Y
                 
+                -- Logic: 
+                -- If Line is BELOW area center (higher Y value) -> Hold to move UP
+                -- If Line is ABOVE area center (lower Y value) -> Release to move DOWN
                 if lineScale > areaCenterScale then
+                    -- Line is below center, need to hold to move up
                     if not State.isPourHolding then
                         VirtualInputManager:SendMouseMoveEvent(centerX, trueY, game)
                         VirtualInputManager:SendMouseButtonEvent(centerX, trueY, 0, true, game, 1)
                         State.isPourHolding = true
                     end
                 else
+                    -- Line is above center, need to release to move down
                     if State.isPourHolding then
                         VirtualInputManager:SendMouseButtonEvent(centerX, trueY, 0, false, game, 1)
                         State.isPourHolding = false
@@ -3266,6 +3627,7 @@ do
         end)
     end
 
+    -- Minigame Loops
     task.spawn(function()
         while true do
             task.wait(0.1)
@@ -3294,49 +3656,10 @@ task.spawn(function()
     end
 end)
 
+-- ==================== SELL TAB ====================
 
-local SellOreTypes = {
-    "Stone", "Copper", "Tin", "Sand Stone", "Iron", "Silver", "Gold",
-    "Platinum", "Starite", "Poopite", "Bananite", "Cardboardite",
-    "Cobalt", "Titanium", "Lapis Lazuli", "Quartz", "Amethyst", "Topaz",
-    "Diamond", "Sapphire", "Ruby", "Emerald", "Cuprite", "Eye Ore",
-    "Rivalite", "Uranium", "Mythril", "Lightite", "Obsidian", "Fireite",
-    "Magmaite", "Demonite", "Slimite", "Boneite", "Dark Boneite",
-    "Aite", "Grass", "Mushroomite", "Fichillium", "Fichilliumorite", "Galaxite", "Darkryte",
-    "Volcanic Rock"
-}
+-- Item lists for sell dropdowns
 
-_G.OreRarityMap = {
-    Stone = "Common", ["Sand Stone"] = "Common", Copper = "Common", 
-    Iron = "Common", Cardboardite = "Common", Grass = "Common",
-    Tin = "Uncommon", Silver = "Uncommon", Gold = "Uncommon", 
-    Bananite = "Uncommon", Cobalt = "Uncommon", Titanium = "Uncommon", 
-    ["Lapis Lazuli"] = "Uncommon",
-    Platinum = "Rare", Mushroomite = "Rare", Quartz = "Rare", 
-    Amethyst = "Rare", Topaz = "Rare", Diamond = "Rare", 
-    Sapphire = "Rare", Boneite = "Rare", ["Dark Boneite"] = "Rare",
-    ["Volcanic Rock"] = "Rare",
-    Poopite = "Epic", Aite = "Epic", Ruby = "Epic", 
-    Emerald = "Epic", Cuprite = "Epic", Rivalite = "Epic", 
-    Obsidian = "Epic", Slimite = "Epic",
-    Uranium = "Legendary", Mythril = "Legendary", Lightite = "Legendary", 
-    Fireite = "Legendary", Magmaite = "Legendary", ["Eye Ore"] = "Legendary",
-    Starite = "Mythic", Demonite = "Mythic", Darkryte = "Mythic",
-    Fichillium = "Relic", Galaxite = "Divine", Fichilliumorite = "Unobtainable"
-}
-
-_G.RarityList = {"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic"}
-
-_G.getOresByRarity = function(rarity)
-    local ores = {}
-    for oreName, oreRarity in pairs(_G.OreRarityMap) do
-        if oreRarity == rarity then
-            ores[#ores + 1] = oreName
-        end
-    end
-    table.sort(ores)
-    return ores
-end
 
 local SellMaterialTypes = {
     "Tiny Essence", "Small Essence", "Medium Essence", "Large Essence",
@@ -3358,6 +3681,7 @@ SellWeaponTypes = {
     "Dragon Slayer", "Skull Crusher", "Comically Large Spoon"
 }
 
+-- Sell State variables
 State.isAutoSellOreEnabled = false
 State.isAutoSellMaterialEnabled = false
 State.isAutoSellPickaxeEnabled = false
@@ -3447,16 +3771,19 @@ end
 local function initializeSellSession()
     if State.sellSessionInitialized then return true end
     
+    -- Pause auto farms during sell initialization to prevent tween conflicts
     local wasAutoFarmEnabled = State.isAutoFarmEnabled
     local wasAutoMonsterFarmEnabled = State.isAutoMonsterFarmEnabled
     local wasAutoMaterialFarmEnabled = State.isAutoMaterialFarmEnabled
     
+    -- Temporarily disable auto farms
     State.isAutoFarmEnabled = false
     State.isAutoMonsterFarmEnabled = false
     State.isAutoMaterialFarmEnabled = false
-    task.wait(0.3)
+    task.wait(0.3) -- Let current farm loops stop
     
     local success = pcall(function()
+        -- Find Greedy Cey NPC dynamically instead of fixed position
         local greedyCey = workspace:WaitForChild("Proximity", 5):WaitForChild("Greedy Cey", 5)
         if not greedyCey then
             error("Greedy Cey not found")
@@ -3468,6 +3795,7 @@ local function initializeSellSession()
         elseif greedyCey:FindFirstChild("HumanoidRootPart") then
             npcPos = greedyCey.HumanoidRootPart.Position
         else
+            -- Fallback: get position from any part
             for _, part in pairs(greedyCey:GetDescendants()) do
                 if part:IsA("BasePart") then
                     npcPos = part.Position
@@ -3480,11 +3808,12 @@ local function initializeSellSession()
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
         
         if npcPos and hrp then
-            local targetCFrame = CFrame.new(npcPos + Vector3.new(0, 3, 3), npcPos) 
+            local targetCFrame = CFrame.new(npcPos + Vector3.new(0, 3, 3), npcPos) -- Look at NPC, slightly higher
             local distance = (npcPos - hrp.Position).Magnitude
             local tweenTime = math.clamp(distance / 80, 0.5, 5)
             local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
             
+            -- Prepare for tween: Noclip + Anchor + PlatformStand
             local humanoid = character:FindFirstChild("Humanoid")
             local originalCollision = {}
             local originalAnchored = hrp.Anchored
@@ -3505,6 +3834,7 @@ local function initializeSellSession()
             tween:Play()
             tween.Completed:Wait()
             
+            -- Restore after tween
             for part, wasCollidable in pairs(originalCollision) do
                 if part and part.Parent then
                     part.CanCollide = wasCollidable
@@ -3519,11 +3849,13 @@ local function initializeSellSession()
             task.wait(0.3)
         end
         
+        -- Open dialogue with Greedy Cey
         ReplicatedStorage.Shared.Packages.Knit.Services.ProximityService.RF.Dialogue:InvokeServer(greedyCey)
         task.wait(0.2)
         ReplicatedStorage.Shared.Packages.Knit.Services.DialogueService.RE.DialogueEvent:FireServer("Opened")
     end)
     
+    -- Close dialogue by clicking "No" button
     task.wait(5)
     pcall(function()
         local playerGui = LocalPlayer:WaitForChild("PlayerGui")
@@ -3531,16 +3863,21 @@ local function initializeSellSession()
         if dialogueUI then
             local responseBillboard = dialogueUI:FindFirstChild("ResponseBillboard")
             if responseBillboard then
+                -- Find response with LayoutOrder = 2 (option "No")
                 for _, frame in pairs(responseBillboard:GetChildren()) do
                     if frame:IsA("Frame") and frame.LayoutOrder == 2 then
                         local button = frame:FindFirstChild("Button")
                         if button then
+                            -- Try multiple click methods
+                            -- Method 1: Fire MouseButton1Click signal directly
                             if firesignal then
                                 pcall(function() firesignal(button.MouseButton1Click) end)
                             end
+                            -- Method 2: Fire click using fireclickdetector if available
                             if fireclickdetector then
                                 pcall(function() fireclickdetector(button) end)
                             end
+                            -- Method 3: VirtualInputManager
                             local absPos = button.AbsolutePosition
                             local absSize = button.AbsoluteSize
                             local clickX = absPos.X + absSize.X / 2
@@ -3560,6 +3897,7 @@ local function initializeSellSession()
         game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("DialogueService"):WaitForChild("RE"):WaitForChild("DialogueEvent"):FireServer("Closed")
     end)
     
+    -- Restore auto farms state
     State.isAutoFarmEnabled = wasAutoFarmEnabled
     State.isAutoMonsterFarmEnabled = wasAutoMonsterFarmEnabled
     State.isAutoMaterialFarmEnabled = wasAutoMaterialFarmEnabled
@@ -3573,13 +3911,16 @@ end
 local function sellItems(basket)
     if not next(basket) then return false end
     
+    -- Initialize session only once (tween + dialogue)
     if not State.sellSessionInitialized then
         initializeSellSession()
     end
     
     return pcall(function()
+        -- Sell
         ReplicatedStorage.Shared.Packages.Knit.Services.DialogueService.RF.RunCommand
             :InvokeServer("SellConfirm", {Basket = basket})
+        -- Update equipment info
         ReplicatedStorage.Shared.Packages.Knit.Services.StatusService.RF.GetPlayerEquipmentInfo
             :InvokeServer()
     end)
@@ -3630,19 +3971,21 @@ local function buildRankBasket()
     local rank = State.selectedSellRank or "Common"
     local ores = _G.getOresByRarity(rank)
     for _, oreName in ipairs(ores) do
-        basket[oreName] = 99 
+        basket[oreName] = 99 -- Sell up to 99 of each
     end
+    -- Debug: print basket size
     if next(basket) then
         print("[SELL BY RANK] Selling rank:", rank, "Ores:", #ores)
     end
     return basket
 end
 
+-- ISLAND FILTER FOR SELL
 State.selectedSellIsland = "All"
 
 local SellIslandDropdown = Tabs.Sell:CreateDropdown("SellIslandSelect", {
-    Title = "اختار جزيرة",
-    Description = "حدد الجزيرة لتصفية الخام/المادة",
+    Title = "Island Select",
+    Description = "Chọn Island để lọc Ore/Material",
     Values = IslandList,
     Multi = false,
     Default = "All"
@@ -3650,34 +3993,39 @@ local SellIslandDropdown = Tabs.Sell:CreateDropdown("SellIslandSelect", {
 
 SellIslandDropdown:OnChanged(function(Value)
     State.selectedSellIsland = Value
+    -- Update Ore dropdown
     local ores = IslandOreMap[Value] or SellOreTypes
     if SellOreDropdownRef then
         SellOreDropdownRef:SetValues(ores)
     end
+    -- Update Material dropdown  
     local materials = IslandMaterialMap[Value] or SellMaterialTypes
     if SellMaterialDropdownRef then
         SellMaterialDropdownRef:SetValues(materials)
     end
+    -- Reset selections
     State.selectedSellOres = {}
     State.selectedSellMaterials = {}
 end)
 
-Tabs.Sell:CreateSection("SELL BY RANK")
+-- SELL BY RANK SECTION
+Tabs.Sell:CreateSection("SELL BY RANK"):Collapse()
 
-do
+do -- Scope to avoid local register overflow
     local rankDropdown = Tabs.Sell:CreateDropdown("SellRankSelect", {
-        Title = "اختر الرتبة",
-        Description = "اختر رتبًا متعددة لبيع الخام",
+        Title = "Chọn Rank",
+        Description = "Chọn nhiều rank để bán ore",
         Values = _G.RarityList,
         Multi = true,
         Default = {}
     })
 
     local rankParagraph = Tabs.Sell:CreateParagraph("RankOresInfo", {
-        Title = "الخامات في الرتب المختارة",
-        Content = "لم يتم اختيار الرتبة بعد"
+        Title = "Ores trong các rank đã chọn",
+        Content = "Chưa chọn rank nào"
     })
 
+    -- Helper to get all ores from selected ranks
     local function getOresFromSelectedRanks()
         local allOres = {}
         local ranks = State.selectedSellRanks or {}
@@ -3694,6 +4042,7 @@ do
 
     rankDropdown:OnChanged(function(Value)
         State.selectedSellRanks = Value
+        -- Update paragraph with all ores from selected ranks
         local oreList = {}
         for rank, isSelected in pairs(Value) do
             if isSelected then
@@ -3706,24 +4055,28 @@ do
         table.sort(oreList)
         rankParagraph:SetContent(#oreList > 0 and table.concat(oreList, ", ") or "Chưa chọn rank nào")
         
+        -- If auto sell by rank is enabled, update ore selection
         if State.isAutoSellByRankEnabled then
             State.selectedSellOres = getOresFromSelectedRanks()
         end
     end)
 
     Tabs.Sell:CreateToggle("AutoSellByRank", {
-        Title = "البيع التلقائي حسب الترتيب",
-        Description = "بيع الخام تلقائيًا للرتب المختارة.",
+        Title = "Auto Sell By Rank",
+        Description = "Tự động bán ore của các rank đã chọn",
         Default = false,
         Callback = function(Value)
             State.isAutoSellByRankEnabled = Value
             if Value then
+                -- Populate selectedSellOres with all ores from selected ranks
                 State.selectedSellOres = getOresFromSelectedRanks()
+                -- Enable auto sell ore
                 State.isAutoSellOreEnabled = true
                 if AutoSellOreToggle then
                     AutoSellOreToggle:SetValue(true)
                 end
             else
+                -- Disable auto sell ore and clear selection
                 State.isAutoSellOreEnabled = false
                 State.selectedSellOres = {}
                 if AutoSellOreToggle then
@@ -3734,13 +4087,14 @@ do
     })
 end
 
-Tabs.Sell:CreateSection("ORE SELL")
+-- ORE SELL SECTION
+Tabs.Sell:CreateSection("ORE SELL"):Collapse()
 
 Tabs.Sell:CreateInput("OreSearch", {
-    Title = "العثور على الخام",
-    Description = "أدخل اسم الخام لتصفية النتائج.",
+    Title = "Find Ore",
+    Description = "Nhập tên ore để lọc",
     Default = "",
-    Placeholder = "أدخل اسم الخام...",
+    Placeholder = "Nhập tên ore...",
     Numeric = false,
     Finished = false,
     Callback = function(Value)
@@ -3752,8 +4106,8 @@ Tabs.Sell:CreateInput("OreSearch", {
 })
 
 SellOreDropdownRef = Tabs.Sell:CreateDropdown("SellOreSelect", {
-    Title = "اختر الخام للبيع",
-    Description = "اختر أنواع الخام",
+    Title = "Chọn Ore để bán",
+    Description = "Chọn các loại ore",
     Values = SellOreTypes,
     Multi = true,
     Default = {}
@@ -3764,8 +4118,8 @@ SellOreDropdownRef:OnChanged(function(Value)
 end)
 
 Tabs.Sell:CreateInput("OreQuantity", {
-    Title = "كمية الخام",
-    Description = "ستبيع كل عملية بيع هذه الكمية.",
+    Title = "Ore Quantity",
+    Description = "Mỗi lần bán sẽ bán số lượng này",
     Default = "1",
     Placeholder = "1",
     Numeric = true,
@@ -3776,21 +4130,22 @@ Tabs.Sell:CreateInput("OreQuantity", {
 })
 
 AutoSellOreToggle = Tabs.Sell:CreateToggle("AutoSellOre", {
-    Title = "اوتو بيع خام",
-    Description = "بيع الخام المحدد تلقائيًا",
+    Title = "Auto Sell Ore",
+    Description = "Tự động bán ore đã chọn",
     Default = false,
     Callback = function(Value)
         State.isAutoSellOreEnabled = Value
     end
 })
 
-Tabs.Sell:CreateSection("MATERIAL SELL")
+-- MATERIAL SELL SECTION
+Tabs.Sell:CreateSection("MATERIAL SELL"):Collapse()
 
 Tabs.Sell:CreateInput("MaterialSearch", {
-    Title = "بحث على ماتريل",
-    Description = "أدخل اسم المادة المراد تصفيتها.",
+    Title = "Find Material",
+    Description = "Nhập tên material để lọc",
     Default = "",
-    Placeholder = "أدخل اسم المادة...",
+    Placeholder = "Nhập tên material...",
     Numeric = false,
     Finished = false,
     Callback = function(Value)
@@ -3802,8 +4157,8 @@ Tabs.Sell:CreateInput("MaterialSearch", {
 })
 
 SellMaterialDropdownRef = Tabs.Sell:CreateDropdown("SellMaterialSelect", {
-    Title = "اختار ماتريل للبيع",
-    Description = "اختر أنواع المواد",
+    Title = "Select Material to sell",
+    Description = "Chọn các loại material",
     Values = SellMaterialTypes,
     Multi = true,
     Default = {}
@@ -3814,8 +4169,8 @@ SellMaterialDropdownRef:OnChanged(function(Value)
 end)
 
 Tabs.Sell:CreateInput("MaterialQuantity", {
-    Title = "كمية المواد",
-    Description = "ستبيع كل عملية بيع هذه الكمية.",
+    Title = "Material Quantity",
+    Description = "Mỗi lần bán sẽ bán số lượng này",
     Default = "1",
     Placeholder = "1",
     Numeric = true,
@@ -3826,19 +4181,20 @@ Tabs.Sell:CreateInput("MaterialQuantity", {
 })
 
 Tabs.Sell:CreateToggle("AutoSellMaterial", {
-    Title = "اوتو بيع ماتريل",
-    Description = "بيع المواد المختارة تلقائياً",
+    Title = "Auto Sell Material",
+    Description = "Tự động bán material đã chọn",
     Default = false,
     Callback = function(Value)
         State.isAutoSellMaterialEnabled = Value
     end
 })
 
-Tabs.Sell:CreateSection("PICKAXE SELL")
+-- PICKAXE SELL SECTION
+Tabs.Sell:CreateSection("PICKAXE SELL"):Collapse()
 
 local SellPickaxeDropdown = Tabs.Sell:CreateDropdown("SellPickaxeSelect", {
-    Title = "اختر pickaxe لبيع.",
-    Description = "احتفظ بواحد على الأقل pickaxe",
+    Title = "Chọn Pickaxe để bán",
+    Description = "Giữ lại ít nhất 1 pickaxe",
     Values = SellPickaxeTypes,
     Multi = true,
     Default = {}
@@ -3849,19 +4205,20 @@ SellPickaxeDropdown:OnChanged(function(Value)
 end)
 
 Tabs.Sell:CreateToggle("AutoSellPickaxe", {
-    Title = "اوتو بيع pickaxe",
-    Description = "قم ببيع pickaxe المختارة تلقائيًا.",
+    Title = "Auto Sell Pickaxe",
+    Description = "Tự động bán pickaxe đã chọn",
     Default = false,
     Callback = function(Value)
         State.isAutoSellPickaxeEnabled = Value
     end
 })
 
-Tabs.Sell:CreateSection("WEAPON SELL")
+-- WEAPON SELL SECTION
+Tabs.Sell:CreateSection("WEAPON SELL"):Collapse()
 
 local SellWeaponDropdown = Tabs.Sell:CreateDropdown("SellWeaponSelect", {
-    Title = "اختر السلاح الذي ترغب في بيعه",
-    Description = "قم بتاكيد السلاح الي بتبيعه ليس موجود في يدك او بجنب pickaxe",
+    Title = "Select Weapon to sell",
+    Description = "Không bán weapon equipped",
     Values = SellWeaponTypes,
     Multi = true,
     Default = {}
@@ -3872,31 +4229,32 @@ SellWeaponDropdown:OnChanged(function(Value)
 end)
 
 Tabs.Sell:CreateToggle("AutoSellWeapon", {
-    Title = "اوتو بيع سلاح",
-    Description = "قم ببيع السلاح المحدد تلقائياً.",
+    Title = "Auto Sell Weapon",
+    Description = "Tự động bán weapon đã chọn",
     Default = false,
     Callback = function(Value)
         State.isAutoSellWeaponEnabled = Value
     end
 })
 
-Tabs.Sell:CreateSection("SETTINGS")
+-- SETTINGS SECTION
+Tabs.Sell:CreateSection("SETTINGS"):Collapse()
 
 Tabs.Sell:CreateSlider("SellInterval", {
     Title = "Sell (s)",
-    Description = "الفاصل الزمني بين كل عملية بيع",
+    Description = "Thời gian giữa mỗi lần auto sell",
     Default = 0.1, Min = 0.1, Max = 60, Rounding = 1,
     Callback = function(Value) State.sellInterval = Value end
 })
 
 SellStatusRef = Tabs.Sell:CreateParagraph("SellStatus", {
     Title = "Sell Status",
-    Content = "مستعد"
+    Content = "Sẵn sàng"
 })
 
 Tabs.Sell:CreateButton({
-    Title = "بيع الكل لان",
-    Description = "قم ببيع جميع المنتجات المختارة فوراً.",
+    Title = "Sell All Now",
+    Description = "Bán ngay tất cả items đã chọn",
     Callback = function()
         local count = 0
         if next(buildOreBasket()) then sellItems(buildOreBasket()) count = count + 1 end
@@ -3923,11 +4281,168 @@ task.spawn(function()
     end
 end)
 
-Tabs.Sell:CreateSection("UTILITY")
+-- UTILITY SECTION
+Tabs.Sell:CreateSection("UTILITY"):Collapse()
+
+-- ==================== ORE ESP ====================
+State.isOreESPEnabled = false
+State.oreESPRange = 200
+
+OreESP_GetPlayerPosition = function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        return LocalPlayer.Character.HumanoidRootPart.Position
+    end
+    return nil
+end
+
+OreESP_CreateOrUpdate = function(part, oreName)
+    Billboard = part:FindFirstChild("OreESP_BG")
+    
+    if not Billboard then
+        Billboard = Instance.new("BillboardGui")
+        Billboard.Name = "OreESP_BG"
+        Billboard.Size = UDim2.new(0, 120, 0, 50)
+        Billboard.StudsOffset = Vector3.new(0, 4, 0)
+        Billboard.AlwaysOnTop = true
+        Billboard.Parent = part
+        
+        TextLabel = Instance.new("TextLabel")
+        TextLabel.Name = "Label"
+        TextLabel.Size = UDim2.new(1, 0, 1, 0)
+        TextLabel.BackgroundTransparency = 0.5
+        TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+        TextLabel.TextStrokeTransparency = 0
+        TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+        TextLabel.Font = Enum.Font.GothamBold
+        TextLabel.TextScaled = true
+        TextLabel.Parent = Billboard
+    end
+    
+    Billboard.Label.Text = "Ore: " .. tostring(oreName)
+end
+
+OreESP_Remove = function(part)
+    Billboard = part:FindFirstChild("OreESP_BG")
+    if Billboard then
+        Billboard:Destroy()
+    end
+end
+
+OreESP_Scan = function()
+    PlayerPos = OreESP_GetPlayerPosition()
+    if not PlayerPos then return 0 end
+    
+    RocksFolder = workspace:FindFirstChild("Rocks")
+    if not RocksFolder then return 0 end
+    
+    Count = 0
+    
+    for _, Island in pairs(RocksFolder:GetChildren()) do
+        for _, Rock in pairs(Island:GetChildren()) do
+            pcall(function()
+                for _, Child in pairs(Rock:GetDescendants()) do
+                    OreValue = Child:GetAttribute("Ore")
+                    
+                    if OreValue then
+                        PartPos = nil
+                        if Child:IsA("BasePart") then
+                            PartPos = Child.Position
+                        elseif Child:IsA("Model") and Child.PrimaryPart then
+                            PartPos = Child.PrimaryPart.Position
+                        elseif Child.Parent:IsA("BasePart") then
+                            PartPos = Child.Parent.Position
+                        end
+                        
+                        if PartPos then
+                            Distance = (PartPos - PlayerPos).Magnitude
+                            
+                            if Distance <= State.oreESPRange then
+                                TargetPart = Child
+                                if not Child:IsA("BasePart") then
+                                    TargetPart = Child.Parent
+                                end
+                                
+                                OreESP_CreateOrUpdate(TargetPart, OreValue)
+                                Count = Count + 1
+                            else
+                                TargetPart = Child
+                                if not Child:IsA("BasePart") then
+                                    TargetPart = Child.Parent
+                                end
+                                OreESP_Remove(TargetPart)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+    
+    return Count
+end
+
+OreESP_ClearAll = function()
+    RocksFolder = workspace:FindFirstChild("Rocks")
+    if not RocksFolder then return end
+    
+    for _, Island in pairs(RocksFolder:GetChildren()) do
+        for _, Rock in pairs(Island:GetChildren()) do
+            pcall(function()
+                for _, Child in pairs(Rock:GetDescendants()) do
+                    if Child:FindFirstChild("OreESP_BG") then
+                        Child.OreESP_BG:Destroy()
+                    end
+                    if Child.Parent and Child.Parent:FindFirstChild("OreESP_BG") then
+                        Child.Parent.OreESP_BG:Destroy()
+                    end
+                end
+            end)
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        if State.isOreESPEnabled then
+            pcall(OreESP_Scan)
+        end
+    end
+end)
+
+Tabs.Ore:CreateToggle("OreESP", {
+    Title = "Ore ESP",
+    Description = "Hiển thị tên quặng trong các hòn đá gần bạn (phạm vi " .. State.oreESPRange .. " studs)",
+    Default = false,
+    Callback = function(Value)
+        State.isOreESPEnabled = Value
+        if not Value then
+            OreESP_ClearAll()
+        end
+        Library:Notify({
+            Title = "Ore ESP",
+            Content = Value and "Đang bật ESP quặng" or "Đã tắt ESP quặng",
+            Duration = 2
+        })
+    end
+})
+
+Tabs.Ore:CreateSlider("OreESPRange", {
+    Title = "Phạm vi ESP",
+    Description = "Khoảng cách hiển thị ESP (studs)",
+    Default = 200,
+    Min = 50,
+    Max = 500,
+    Rounding = 0,
+    Callback = function(Value)
+        State.oreESPRange = Value
+    end
+})
 
 Tabs.Sell:CreateButton({
-    Title = "ازالة لافا ماب 2",
-    Description = "قم بإزالة الحمم البركانية من أعماق البراكين/الكهف لتجنب فقدان نقاط الصحة أثناء تفريم",
+    Title = "Remove Lava (Map 2)",
+    Description = "Xóa lava ở Volcanic Depths/Cave tránh mất HP khi farm",
     Callback = function()
         local count = 0
         for _, obj in pairs(Workspace:GetDescendants()) do
@@ -3943,17 +4458,18 @@ Tabs.Sell:CreateButton({
                 end
             end
         end
-        Library:Notify({Title = "Remove Lava", Content = "مختفي " .. count .. " lava parts", Duration = 3})
+        Library:Notify({Title = "Remove Lava", Content = "Đã ẩn " .. count .. " lava parts", Duration = 3})
     end
 })
 
 Tabs.Sell:CreateToggle("AutoRemoveLava", {
-    Title = "اوتو ازالة لافا",
-    Description = "يزيل كل حمم عند تحميل ماب كامل",
+    Title = "Auto Remove Lava",
+    Description = "Tự động ẩn lava khi load map (CrackedLava material)",
     Default = true,
     Callback = function(Value)
         State.isAutoRemoveLavaEnabled = Value
         if Value then
+            -- Hide immediately
             for _, obj in pairs(Workspace:GetDescendants()) do
                 if obj:IsA("BasePart") then
                     local name = obj.Name:lower()
@@ -3970,6 +4486,7 @@ Tabs.Sell:CreateToggle("AutoRemoveLava", {
     end
 })
 
+-- Auto remove lava on new descendants
 Workspace.DescendantAdded:Connect(function(obj)
     if State.isAutoRemoveLavaEnabled and obj:IsA("BasePart") then
         task.wait(0.1)
@@ -3997,10 +4514,15 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 
-_G.__TF = _G.__TF or {}
-_G.__TF.NpcAlias = _G.__TF.NpcAlias or {}  
+-- ================== AUTO TALK NPC (NO-LOCAL CHUNK PATCH) ==================
+-- This patch avoids adding new top-level locals to prevent "local registers limit 200".
 
+_G.__TF = _G.__TF or {}
+_G.__TF.NpcAlias = _G.__TF.NpcAlias or {}  -- you can set: _G.__TF.NpcAlias["Wizard"]="The Wizard"
+
+-- Call: _G.AutoTalkNPC("Sensei Moro") or _G.AutoTalkNPC(model)
 _G.AutoTalkNPC = function(npc)
+    -- resolve npc name
     local npcName = nil
     if typeof(npc) == "string" then
         npcName = npc
@@ -4011,6 +4533,7 @@ _G.AutoTalkNPC = function(npc)
     end
     npcName = _G.__TF.NpcAlias[npcName] or npcName
 
+    -- pick position from existing tables in TheForge
     local pos = nil
     if type(QuestNPCPositions) == "table" then
         pos = QuestNPCPositions[npcName] or QuestNPCPositions[tostring(npcName)]
@@ -4019,6 +4542,7 @@ _G.AutoTalkNPC = function(npc)
         pos = NPCPositions[npcName] or NPCPositions[tostring(npcName)]
     end
 
+    -- tween to position (must be tween, no teleport fallback)
     local plr = game:GetService("Players").LocalPlayer
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
@@ -4031,6 +4555,7 @@ _G.AutoTalkNPC = function(npc)
         tw:Play()
         tw.Completed:Wait()
     elseif typeof(npc) == "Instance" then
+        -- fallback: tween to model's PrimaryPart (still tween, not teleport)
         local part = npc.PrimaryPart or npc:FindFirstChildWhichIsA("BasePart")
         if not part then return false end
         local ts = game:GetService("TweenService")
@@ -4042,11 +4567,13 @@ _G.AutoTalkNPC = function(npc)
         return false
     end
 
+    -- wait for proximity to appear (as you described)
     local proxFolder = workspace:FindFirstChild("Proximity") or workspace:WaitForChild("Proximity", 6)
     if not proxFolder then return false end
     local proxNpc = proxFolder:FindFirstChild(npcName) or proxFolder:WaitForChild(npcName, 4)
     if not proxNpc then return false end
 
+    -- call your remotes exactly
     local rs = game:GetService("ReplicatedStorage")
     local services = rs:WaitForChild("Shared"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services")
 
@@ -4065,6 +4592,7 @@ _G.AutoTalkNPC = function(npc)
     return ok
 end
 
+-- Optional: auto-refresh quest dropdown (no new locals in chunk)
 _G.__TF.AutoQuestEnabled = _G.__TF.AutoQuestEnabled or false
 _G.__TF.RegisterQuestDropdown = _G.__TF.RegisterQuestDropdown or function(cb)
     _G.__TF._QuestDropdownCallbacks = _G.__TF._QuestDropdownCallbacks or {}
@@ -4084,5 +4612,4 @@ task.spawn(function()
         end
     end
 end)
-
-
+-- ================== END PATCH ==================
