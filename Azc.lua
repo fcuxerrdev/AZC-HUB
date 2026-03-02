@@ -12,7 +12,7 @@ local isTablet = UserInputService.TouchEnabled and (workspace.CurrentCamera.View
 local guiScale = isMobile and (isTablet and 0.75 or 0.55) or 1
 
 local sg = Instance.new("ScreenGui")
-sg.Name = "LUNI010_AutoDuels"
+sg.Name = "azc_AutoDuels"
 sg.ResetOnSpawn = false
 sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 sg.IgnoreGuiInset = true
@@ -24,7 +24,7 @@ centerText.Parent = sg
 centerText.Size = UDim2.new(0, 280, 0, 40)
 centerText.Position = UDim2.new(0.5, -140, 0.5, -20)
 centerText.BackgroundTransparency = 1
-centerText.Text = ".gg/NGEMSasjjG"
+centerText.Text = ".gg/azc"
 centerText.Font = Enum.Font.GothamBlack
 centerText.TextScaled = false
 centerText.TextSize = 24
