@@ -44,7 +44,7 @@ ragdollIndicator.Parent = sg
 ragdollIndicator.Size = UDim2.new(0, 220, 0, 38)
 ragdollIndicator.Position = UDim2.new(1, -240, 0, 20)
 ragdollIndicator.BackgroundColor3 = Color3.fromRGB(25, 30, 20)
-ragdollIndicator.Text = "âš¡ Ragdoll TP Active âš¡"
+ragdollIndicator.Text = "AZC Ragdoll TP Active AZC"
 ragdollIndicator.TextColor3 = Color3.fromRGB(180, 230, 120)
 ragdollIndicator.Font = Enum.Font.GothamSemibold
 ragdollIndicator.TextSize = 15 * guiScale
@@ -262,7 +262,7 @@ local iconLbl = Instance.new("TextLabel", header)
 iconLbl.Size = UDim2.new(0, 32 * guiScale, 0, 32 * guiScale)
 iconLbl.Position = UDim2.new(0, 12 * guiScale, 0.5, -16 * guiScale)
 iconLbl.BackgroundTransparency = 1
-iconLbl.Text = "âš¡"
+iconLbl.Text = "azc"
 iconLbl.TextSize = 24 * guiScale
 iconLbl.Font = Enum.Font.GothamBlack
 iconLbl.ZIndex = 6
@@ -295,7 +295,7 @@ local closeBtn = Instance.new("TextButton", header)
 closeBtn.Size = UDim2.new(0, closeBtnSize, 0, closeBtnSize)
 closeBtn.Position = UDim2.new(1, -(closeBtnSize + 10 * guiScale), 0.5, -closeBtnSize / 2)
 closeBtn.BackgroundColor3 = Color3.fromRGB(180, 70, 70)
-closeBtn.Text = "âœ•"
+closeBtn.Text = "x"
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.Font = Enum.Font.GothamBlack
 closeBtn.TextSize = 16 * guiScale
@@ -317,7 +317,7 @@ if isMobile then
     minimizeBtn.Size = UDim2.new(0, closeBtnSize, 0, closeBtnSize)
     minimizeBtn.Position = UDim2.new(1, -(closeBtnSize * 2 + 20 * guiScale), 0.5, -closeBtnSize / 2)
     minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 100, 140)
-    minimizeBtn.Text = "âˆ’"
+    minimizeBtn.Text = "-"
     minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     minimizeBtn.Font = Enum.Font.GothamBlack
     minimizeBtn.TextSize = 20 * guiScale
@@ -331,7 +331,7 @@ if isMobile then
             minimizeBtn.Text = "+"
         else
             TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, W, 0, H)}):Play()
-            minimizeBtn.Text = "âˆ’"
+            minimizeBtn.Text = "-"
         end
     end)
 end
